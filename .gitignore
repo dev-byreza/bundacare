@@ -1,0 +1,10 @@
+# Dependencies & Log files
+node_modules/
+*.log
+
+# OS Generated
+.DS_Store
+Thumbs.db
+
+# Gemini Agent Scratchpad
+.gemini/
