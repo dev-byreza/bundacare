@@ -633,8 +633,8 @@ function saveDiaryEntry(e) {
 function saveCustomApiKey() {
   const input = document.getElementById('customApiKeyInput');
   const val = input ? input.value.trim() : '';
-  if (!val) {
-    showToast("Masukkan API Key Gemini yang valid (dimulai dengan AIzaSy...).");
+  if (!val || val.length < 10) {
+    showToast("Silakan masukkan API Key Gemini yang valid.");
     return;
   }
   localStorage.setItem('bundacare_gemini_key', val);
@@ -644,9 +644,15 @@ function saveCustomApiKey() {
 
 function updateAiStatusBadge() {
   const badge = document.getElementById('aiStatusBadge');
+  const input = document.getElementById('customApiKeyInput');
   const key = localStorage.getItem('bundacare_gemini_key');
+  
+  if (input && key) {
+    input.value = key;
+  }
+
   if (badge) {
-    if (key && key.startsWith('AIzaSy')) {
+    if (key && key.length >= 10) {
       badge.innerHTML = `<i class="fa-solid fa-circle-check" style="color:var(--accent-teal);"></i> Gemini API Connected`;
     } else {
       badge.innerHTML = `<i class="fa-solid fa-heart-pulse" style="color:var(--primary);"></i> BundaCare Health Engine`;
@@ -687,7 +693,7 @@ async function fetchGeminiAiResponse(query) {
   const savedKey = localStorage.getItem('bundacare_gemini_key');
   const apiKey = (savedKey && savedKey.trim()) ? savedKey.trim() : "";
 
-  if (apiKey && apiKey.startsWith('AIzaSy')) {
+  if (apiKey && apiKey.length >= 10) {
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
       const promptText = `Anda adalah Asisten Medis Kehamilan BundaCare. Berikan jawaban yang hangat, ramah, empati, ilmiah, dan praktis untuk ibu hamil di Indonesia. Jika pertanyaan berhubungan dengan sholat/rukuk/puasa/ibadah, jelaskan sudut pandang kesehatan dan kemudahan (rukhshah) dalam Islam. Pertanyaan Ibu Hamil: "${query}"`;
@@ -708,6 +714,10 @@ async function fetchGeminiAiResponse(query) {
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\n/g, '<br>');
         }
+      } else {
+        const errJson = await response.json().catch(() => ({}));
+        console.warn("Gemini API HTTP Error:", response.status, errJson);
+        showToast(`Gemini API Error (${response.status}): ${errJson.error?.message || 'Cek kembali API key'}`);
       }
     } catch (err) {
       console.warn("Gemini API call failed, switching to local health knowledge engine:", err);
@@ -808,6 +818,7 @@ function switchTab(tabId) {
   if (tabId === 'kalender') renderCalendar();
   if (tabId === 'profil') populateProfileModal();
   if (tabId === 'catatan') renderDiaryHistory();
+  if (tabId === 'ai-assistant') updateAiStatusBadge();
 }
 
 // --- Modals & Toasts ---
@@ -885,4 +896,5 @@ document.addEventListener('DOMContentLoaded', () => {
   renderAncList();
   initEducationSelect();
   renderDiaryHistory();
+  updateAiStatusBadge();
 });
