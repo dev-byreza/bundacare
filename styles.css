@@ -1272,31 +1272,33 @@ body {
 }
 
 .profile-avatar-thumb {
-  width: 54px;
-  height: 54px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid white;
-  box-shadow: var(--glass-shadow);
+  border: 3.5px solid white;
+  box-shadow: 0 8px 24px var(--primary-glow), var(--glass-shadow);
+  transition: var(--transition-smooth);
 }
 
 .profile-user-name {
-  font-size: 16px;
+  font-size: 22px;
   font-weight: 800;
+  letter-spacing: -0.3px;
 }
 
 .profile-user-email {
-  font-size: 11.5px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 
 .profile-goldar-pill {
   display: inline-block;
-  margin-top: 3px;
-  font-size: 10.5px;
+  margin-top: 5px;
+  font-size: 11.5px;
   font-weight: 700;
   color: var(--primary);
-  padding: 2px 8px;
+  padding: 3px 12px;
 }
 
 .btn-edit-compact {
