@@ -177,24 +177,25 @@ function updateDashboard() {
   // Render Dashboard Medicines Checklist
   renderDashboardMedList();
 
-  // Update Profile Tab Details
-  document.getElementById('profNameDisplay').innerText = p.name;
-  document.getElementById('profEmailDisplay').innerText = p.email;
-  document.getElementById('profGoldarDisplay').innerText = `Golongan Darah: ${p.goldar}`;
-  document.getElementById('profHpht').innerText = calc.hphtFormatted;
-  document.getElementById('profHpl').innerText = calc.hplFormatted;
-  document.getElementById('profBb').innerText = `${p.bbAwal} kg ➔ ${p.bbSekarang} kg (+${diffBb} kg)`;
-  document.getElementById('profTb').innerText = `${p.tb} cm`;
-  document.getElementById('profEmergency').innerText = p.emergency;
-  document.getElementById('profDoctor').innerText = p.doctor;
-  document.getElementById('profAllergy').innerText = p.allergy;
+  // Update Profile Tab Details (null-safe)
+  const safe = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
+  safe('profNameDisplay', p.name);
+  safe('profEmailDisplay', p.email);
+  safe('profGoldarDisplay', `Golongan Darah: ${p.goldar}`);
+  safe('profHpht', calc.hphtFormatted);
+  safe('profHpl', calc.hplFormatted);
+  safe('profBb', `${p.bbAwal} kg ➔ ${p.bbSekarang} kg (+${diffBb} kg)`);
+  safe('profTb', `${p.tb} cm`);
+  safe('profEmergency', p.emergency);
+  safe('profDoctor', p.doctor);
+  safe('profAllergy', p.allergy);
 
-  if (p.avatar) {
-    const mainAvatar = document.querySelector('.profile-avatar-xl');
-    if (mainAvatar) mainAvatar.src = p.avatar;
-    const sideAvatar = document.getElementById('sidebarAvatar');
-    if (sideAvatar) sideAvatar.src = p.avatar;
-  }
+  // Always update avatar (fallback to default if not set)
+  const avatarSrc = p.avatar || 'assets/avatar.png';
+  const mainAvatar = document.querySelector('.profile-avatar-xl');
+  if (mainAvatar) mainAvatar.src = avatarSrc;
+  const sideAvatar = document.getElementById('sidebarAvatar');
+  if (sideAvatar) sideAvatar.src = avatarSrc;
 }
 
 // Render Dashboard Short Medicine List (Front View - Checkbox Only)
@@ -1018,22 +1019,34 @@ function switchTab(tabId) {
   if (tabId === 'obat') renderFullMedList();
   if (tabId === 'pemeriksaan') renderAncList();
   if (tabId === 'kalender') renderCalendar();
-  if (tabId === 'profil') populateProfileModal();
   if (tabId === 'catatan') renderDiaryHistory();
   if (tabId === 'ai-assistant') updateAiStatusBadge();
 }
 
 // --- Modals & Toasts ---
 function openModal(modalId) {
+  // Close all other modals first
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.classList.remove('active');
+    m.style.display = '';
+  });
   const el = document.getElementById(modalId);
-  if (el) el.classList.add('active');
+  if (el) {
+    el.classList.add('active');
+    el.style.display = 'flex';
+  }
   // Auto-populate specific modals when opened
   if (modalId === 'modalEditProfile') populateProfileModal();
 }
 
 function closeModal(modalId) {
   const el = document.getElementById(modalId);
-  if (el) el.classList.remove('active');
+  if (el) {
+    el.classList.remove('active');
+    el.style.display = 'none';
+    // Reset inline display after transition to let CSS take over
+    setTimeout(() => { if (el) el.style.display = ''; }, 350);
+  }
 }
 
 function showToast(msg) {
