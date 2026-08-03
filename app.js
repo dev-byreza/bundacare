@@ -694,11 +694,15 @@ async function fetchGeminiAiResponse(query) {
   const apiKey = (savedKey && savedKey.trim()) ? savedKey.trim() : "";
 
   if (apiKey && apiKey.length >= 10) {
-    const candidateModels = ['gemini-1.5-flash-latest', 'gemini-2.5-flash', 'gemini-1.5-pro', 'gemini-pro'];
-    for (const modelName of candidateModels) {
+    const candidateEndpoints = [
+      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`
+    ];
+
+    for (const url of candidateEndpoints) {
       try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-        const promptText = `Anda adalah Asisten Medis Kehamilan BundaCare. Berikan jawaban yang hangat, ramah, empati, ilmiah, dan praktis untuk ibu hamil di Indonesia. Jika pertanyaan berhubungan dengan sholat/rukuk/puasa/ibadah, jelaskan sudut pandang kesehatan dan kemudahan (rukhshah) dalam Islam. Pertanyaan Ibu Hamil: "${query}"`;
+        const promptText = `Anda adalah Asisten Medis Kehamilan BundaCare. Berikan jawaban yang hangat, ramah, empati, ilmiah, dan praktis untuk ibu hamil di Indonesia. Pertanyaan Ibu Hamil: "${query}"`;
         
         const response = await fetch(url, {
           method: "POST",
@@ -723,7 +727,7 @@ async function fetchGeminiAiResponse(query) {
           break;
         }
       } catch (err) {
-        console.warn(`Gemini API call failed for model ${modelName}:`, err);
+        console.warn(`Gemini API call error:`, err);
       }
     }
   }
@@ -735,7 +739,10 @@ async function fetchGeminiAiResponse(query) {
 function getAiFallbackResponse(query) {
   const q = query.toLowerCase();
 
-  if (q.includes('rukuk') || q.includes('sholat') || q.includes('solat') || q.includes('sujud') || q.includes('ibadah')) {
+  if (q.includes('kontraksi') || q.includes('sejam') || q.includes('his') || q.includes('persalinan') || q.includes('melahirkan') || q.includes('ketuban')) {
+    return "<strong>Batas Kontraksi Kehamilan Yang Perlu Diwaspadai:</strong><br><br>• <strong>Kontraksi Palsu (Braxton Hicks):</strong> Biasanya tidak teratur, hilang saat beristirahat/minum air, dan muncul < 4 kali dalam sejam.<br>• <strong>Kontraksi Asli (Tanda Persalinan):</strong> Muncul <strong>4-5 kali atau lebih dalam 1 jam</strong> (setiap 10-12 menit sekali), durasinya semakin lama (30-60 detik), dan rasa mulas menjalar hingga ke pinggang belakang.<br><br>⚠️ <em>Saran Medis:</em> Jika Bunda mengalami kontraksi teratur <strong>≥4 kali dalam sejam</strong> sebelum usia 37 minggu (risiko persalinan prematur) atau jika cairan ketuban/darah sudah keluar, <strong>segera periksakan diri ke Bidan / RS terdekat!</strong>";
+  }
+  else if (q.includes('rukuk') || q.includes('sholat') || q.includes('solat') || q.includes('sujud') || q.includes('ibadah')) {
     return "<strong>Boleh dan aman, Bunda!</strong> Ibu hamil yang sehat secara umum <strong>sangat diperbolehkan melakukan gerakan rukuk dan sujud saat sholat</strong>. Gerakan sholat bahkan dapat membantu melatih kelenturan panggul.<br><br>💡 <em>Tips Penting:</em><br>• Jika perut semakin membesar, posisi berdiri pusing, atau terasa kram/pegal pada pinggang, Agama Islam memberikan kemudahan (<em>rukhshah</em>) untuk <strong>sholat sambil duduk di kursi</strong>.<br>• Lakukan gerakan rukuk dan sujud secara perlahan tanpa terburu-buru.";
   } 
   else if (q.includes('puasa') || q.includes('ramadhan')) {
@@ -744,8 +751,8 @@ function getAiFallbackResponse(query) {
   else if (q.includes('nanas') || q.includes('durian') || q.includes('nangka') || q.includes('pedas') || q.includes('makanan')) {
     return "Buah nanas matang atau durian dalam jumlah sedikit (1-2 potong kecil) umumnya tidak berbahaya bagi ibu hamil yang sehat. Namun, hindari mengonsumsinya secara berlebihan karena dapat merangsang asam lambung tinggi atau memicu rasa tidak nyaman di perut.";
   } 
-  else if (q.includes('es') || q.includes('dingin')) {
-    return "Air es atau minuman dingin tidak menyebabkan janin menjadi besar atau flu, Bunda. Yang perlu diperhatikan adalah kandungan gula di dalam minuman tersebut. Minum air putih dingin saat cuaca panas sangat aman dan menyegarkan!";
+  else if (q.includes('es') || q.includes('dingin') || q.includes('kopi') || q.includes('kafein')) {
+    return "Air es atau minuman dingin tidak menyebabkan janin menjadi besar atau flu, Bunda. Yang perlu diperhatikan adalah kandungan gula di dalamnya. Untuk kopi/kafein, batasi maksimal 1 cangkir (200mg kafein) sehari.";
   } 
   else if (q.includes('mual') || q.includes('muntah') || q.includes('morning sickness')) {
     return "Untuk meredakan mual saat hamil:<br>1. Makan porsi kecil tapi sering (setiap 2-3 jam).<br>2. Minum seduhan jahe hangat.<br>3. Hindari makanan berlemak, berminyak, atau berbau menyengat.<br>4. Sediakan biskuit krakers kering di samping tempat tidur untuk dimakan sebelum bangun.";
