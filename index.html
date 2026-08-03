@@ -451,18 +451,18 @@
       <!-- TAB 8: ASISTEN AI BUNDACARE -->
       <section class="tab-view" id="tab-ai-assistant">
         <div class="glass-panel" style="padding: 28px;">
-          <div class="section-header">
+          <div class="section-header ai-header" style="flex-wrap:wrap; gap:10px;">
             <h3><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary);"></i> Asisten AI BundaCare 💕</h3>
             <span class="glass-pill" style="font-size:12px; font-weight:700; color:var(--accent-teal);" id="aiStatusBadge">Powered by OpenRouter AI</span>
           </div>
 
           <!-- API Key Input Bar -->
-          <div class="glass-panel" style="padding:12px 18px; margin-top:14px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
-            <div style="display:flex; align-items:center; gap:10px; flex:1;">
+          <div class="glass-panel ai-key-bar">
+            <div style="display:flex; align-items:center; gap:10px; flex:1; width:100%;">
               <i class="fa-solid fa-key" style="color:var(--primary); font-size:16px;"></i>
               <input type="password" id="customApiKeyInput" class="form-control" placeholder="Masukkan OpenRouter API Key Anda (sk-or-v1-...)" style="margin:0; font-size:13px;">
             </div>
-            <button class="btn-submit" style="width:auto; padding:8px 16px; margin:0; font-size:13px;" onclick="saveCustomApiKey()">
+            <button class="btn-submit" style="width:auto; padding:8px 18px; margin:0; white-space:nowrap;" onclick="saveCustomApiKey()">
               <i class="fa-solid fa-floppy-disk"></i> Simpan Key
             </button>
           </div>

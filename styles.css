@@ -1108,8 +1108,17 @@ body {
 }
 
 /* AI Assistant Chat UI */
+.ai-key-bar {
+  padding: 12px 18px;
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .chat-container {
-  height: 480px;
+  height: 500px;
   display: flex;
   flex-direction: column;
 }
@@ -1124,11 +1133,13 @@ body {
 }
 
 .chat-bubble {
-  max-width: 80%;
+  max-width: 82%;
   padding: 14px 18px;
   border-radius: 20px;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.6;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .chat-bubble.bot {
@@ -1297,11 +1308,27 @@ body {
   .usg-thumb-wrapper {
     margin: 0 auto;
   }
+  .ai-key-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px;
+  }
+  .ai-key-bar button {
+    width: 100% !important;
+  }
   .chat-container {
-    height: calc(100vh - 270px);
+    height: calc(100vh - 280px);
+    min-height: 380px;
   }
   .chat-messages {
-    max-height: calc(100vh - 350px);
+    padding: 10px;
+    gap: 10px;
+  }
+  .chat-bubble {
+    max-width: 90%;
+    padding: 12px 14px;
+    font-size: 13.5px;
   }
   .modal-card {
     max-width: 94%;
