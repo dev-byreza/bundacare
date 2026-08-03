@@ -430,6 +430,28 @@ body {
   box-shadow: 0 8px 26px rgba(255, 23, 68, 0.55);
 }
 
+.icon-btn-delete {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 23, 68, 0.35);
+  background: rgba(255, 23, 68, 0.1);
+  color: #ff1744;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  transition: var(--transition-smooth);
+}
+
+.icon-btn-delete:hover {
+  background: #ff1744;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(255, 23, 68, 0.4);
+}
+
 /* Tab Views Container */
 .tab-view {
   display: none;

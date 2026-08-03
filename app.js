@@ -182,17 +182,18 @@ function updateDashboard() {
   document.getElementById('profAllergy').innerText = p.allergy;
 }
 
-// Render Dashboard Short Medicine List
+// Render Dashboard Short Medicine List (Synchronized with Tab Obat)
 function renderDashboardMedList() {
   const container = document.getElementById('dashMedList');
+  if (!container) return;
   container.innerHTML = '';
 
   if (appState.medicines.length === 0) {
-    container.innerHTML = '<p style="font-size:13px; color:var(--text-muted);">Belum ada jadwal obat yang dicatat.</p>';
+    container.innerHTML = '<p style="font-size:13px; color:var(--text-muted); padding:10px;">Belum ada jadwal obat yang dicatat.</p>';
     return;
   }
 
-  appState.medicines.slice(0, 3).forEach(med => {
+  appState.medicines.forEach(med => {
     const card = document.createElement('div');
     card.className = `med-card ${med.taken ? 'taken' : ''}`;
     card.innerHTML = `
@@ -200,12 +201,17 @@ function renderDashboardMedList() {
         <div class="med-icon"><i class="fa-solid fa-capsules"></i></div>
         <div class="med-info">
           <h5>${med.name} (${med.dosage})</h5>
-          <p><i class="fa-regular fa-clock"></i> ${med.time} • ${med.freq}</p>
+          <p><i class="fa-regular fa-clock"></i> Jam: ${med.time} • ${med.freq}</p>
         </div>
       </div>
-      <button class="checkbox-custom" onclick="toggleMedTaken(${med.id})">
-        ${med.taken ? '<i class="fa-solid fa-check"></i>' : ''}
-      </button>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="checkbox-custom" onclick="toggleMedTaken(${med.id})" title="${med.taken ? 'Tandai Belum Diminum' : 'Tandai Sudah Diminum'}">
+          ${med.taken ? '<i class="fa-solid fa-check"></i>' : ''}
+        </button>
+        <button class="icon-btn-delete" onclick="deleteMed(${med.id})" title="Hapus Obat">
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+      </div>
     `;
     container.appendChild(card);
   });
@@ -213,29 +219,38 @@ function renderDashboardMedList() {
 
 // Render Full Medicines Tab List
 function renderFullMedList() {
-  const container = document.getElementById('fullMedList');
+  const container = document.getElementById('fullMedList') || document.getElementById('fullMedListGrid');
+  if (!container) return;
   container.innerHTML = '';
+
+  if (appState.medicines.length === 0) {
+    container.innerHTML = '<p style="font-size:13px; color:var(--text-muted); padding:16px;">Belum ada jadwal obat atau vitamin. Klik tombol "Tambah Obat" di atas untuk menambahkan.</p>';
+    return;
+  }
 
   appState.medicines.forEach(med => {
     const card = document.createElement('div');
-    card.className = `med-card ${med.taken ? 'taken' : ''}`;
+    card.className = `med-card ${med.taken ? 'taken' : ''} glass-panel`;
+    card.style.marginBottom = '12px';
     card.innerHTML = `
       <div class="med-left">
-        <div class="med-icon"><i class="fa-solid fa-pills"></i></div>
+        <div class="med-icon" style="width:44px; height:44px; border-radius:var(--radius-sm); background:var(--primary-soft); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:18px;">
+          <i class="fa-solid fa-pills"></i>
+        </div>
         <div class="med-info">
-          <h5>${med.name} - ${med.dosage}</h5>
-          <p><i class="fa-regular fa-clock"></i> Jam: <strong>${med.time}</strong> | Frekuensi: ${med.freq} | <em>${med.note}</em></p>
+          <h5 style="font-size:15px; font-weight:800;">${med.name} - <span style="color:var(--primary);">${med.dosage}</span></h5>
+          <p style="font-size:12.5px; color:var(--text-muted); margin-top:3px;"><i class="fa-regular fa-clock"></i> <strong>${med.time}</strong> • ${med.freq} ${med.note ? `• <em>(${med.note})</em>` : ''}</p>
         </div>
       </div>
-      <div style="display:flex; align-items:center; gap:12px;">
+      <div style="display:flex; align-items:center; gap:10px;">
         <span class="glass-pill" style="font-size:11px; font-weight:700; color:${med.taken ? 'var(--accent-teal)' : 'var(--accent-pink)'};">
           ${med.taken ? '✓ Diminum' : 'Belum Diminum'}
         </span>
-        <button class="checkbox-custom" onclick="toggleMedTaken(${med.id})">
+        <button class="checkbox-custom" onclick="toggleMedTaken(${med.id})" title="${med.taken ? 'Tandai Belum Diminum' : 'Tandai Sudah Diminum'}">
           ${med.taken ? '<i class="fa-solid fa-check"></i>' : ''}
         </button>
-        <button class="icon-btn" style="width:32px; height:32px; font-size:14px; color:#ff1744;" onclick="deleteMed(${med.id})" title="Hapus Obat">
-          <i class="fa-solid fa-trash"></i>
+        <button class="icon-btn-delete" onclick="deleteMed(${med.id})" title="Hapus Obat">
+          <i class="fa-solid fa-trash-can"></i>
         </button>
       </div>
     `;
@@ -255,11 +270,15 @@ function toggleMedTaken(id) {
 }
 
 function deleteMed(id) {
-  appState.medicines = appState.medicines.filter(m => m.id !== id);
-  saveState();
-  updateDashboard();
-  renderFullMedList();
-  showToast("Jadwal obat berhasil dihapus.");
+  const med = appState.medicines.find(m => m.id === id);
+  const medName = med ? med.name : 'Obat';
+  if (confirm(`Apakah Bunda yakin ingin menghapus jadwal obat "${medName}"?`)) {
+    appState.medicines = appState.medicines.filter(m => m.id !== id);
+    saveState();
+    updateDashboard();
+    renderFullMedList();
+    showToast(`Jadwal obat ${medName} berhasil dihapus. 🗑️`);
+  }
 }
 
 function saveNewMedicine(e) {
