@@ -113,7 +113,9 @@
 
           <!-- Emergency Call Button -->
           <button class="btn-emergency" id="emergencyBtn">
-            <i class="fa-solid fa-phone-volume"></i> Emergency SOS
+            <i class="fa-solid fa-phone-volume"></i>
+            <span class="text-full">Emergency SOS</span>
+            <span class="text-short" style="display:none;">SOS</span>
           </button>
         </div>
       </header>
@@ -682,6 +684,30 @@
       <p style="margin-top:12px; font-size:13px; color:var(--text-muted);">Foto USG Minggu Ke-24 • Pengukuran: BPD 58mm, HC 218mm, AC 194mm, FL 42mm.</p>
     </div>
   </div>
+
+  <!-- Responsive Mobile Navigation Bar (Bottom) -->
+  <nav class="mobile-bottom-nav">
+    <button class="mobile-nav-btn active" onclick="switchTab('dashboard')">
+      <i class="fa-solid fa-house"></i>
+      <span>Beranda</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="switchTab('obat')">
+      <i class="fa-solid fa-pills"></i>
+      <span>Obat</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="switchTab('pemeriksaan')">
+      <i class="fa-solid fa-stethoscope"></i>
+      <span>ANC/USG</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="switchTab('ai-assistant')">
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <span>AI Chat</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="switchTab('profil')">
+      <i class="fa-solid fa-circle-user"></i>
+      <span>Profil</span>
+    </button>
+  </nav>
 
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toastContainer"></div>

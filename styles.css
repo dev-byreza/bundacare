@@ -1223,8 +1223,23 @@ body {
   }
   .app-main {
     max-width: 100%;
-    padding: 16px;
-    padding-bottom: 90px;
+    padding: 12px;
+    padding-bottom: 95px;
+  }
+  .top-header {
+    padding: 12px 14px;
+    gap: 8px;
+  }
+  .header-left h2 {
+    font-size: 16px;
+  }
+  .header-actions {
+    gap: 6px;
+  }
+  .btn-emergency {
+    padding: 8px 14px;
+    font-size: 12px;
+    white-space: nowrap;
   }
   .mobile-bottom-nav {
     display: flex;
@@ -1241,5 +1256,29 @@ body {
   }
   .form-row {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-header {
+    padding: 10px 12px;
+  }
+  .header-left p {
+    display: none;
+  }
+  .btn-emergency {
+    padding: 7px 12px;
+    font-size: 11px;
+  }
+  .btn-emergency .text-full {
+    display: none !important;
+  }
+  .btn-emergency .text-short {
+    display: inline !important;
+  }
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 15px;
   }
 }
