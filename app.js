@@ -937,11 +937,14 @@ document.addEventListener('DOMContentLoaded', () => {
     alert(`🚨 DARURAT BUNDACARE 🚨\n\nMenghubungi:\n1. Suami / Kontak Utama: ${appState.profile.emergency}\n2. RS / Dokter Pendamping: ${appState.profile.doctor}\n3. Ambulans Gawat Darurat: 118 / 119`);
   });
 
-  // Initial Builds
+  // Initial Builds (Deferred for Instant Page Load)
   updateDashboard();
-  renderFullMedList();
-  renderAncList();
-  initEducationSelect();
-  renderDiaryHistory();
-  updateAiStatusBadge();
+  
+  requestAnimationFrame(() => {
+    renderFullMedList();
+    renderAncList();
+    initEducationSelect();
+    renderDiaryHistory();
+    updateAiStatusBadge();
+  });
 });
