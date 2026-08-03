@@ -1321,7 +1321,7 @@ body {
 .chat-single-viewport-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 140px);
+  height: calc(100vh - 170px);
   padding: 0;
   overflow: hidden;
   border-radius: var(--radius-lg);
@@ -1461,7 +1461,7 @@ body {
     width: 100% !important;
   }
   .chat-single-viewport-container {
-    height: calc(100vh - 150px);
+    height: calc(100vh - 190px);
   }
   .chat-messages {
     padding: 10px;
