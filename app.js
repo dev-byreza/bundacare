@@ -529,33 +529,47 @@ function loadEducationForWeek(w) {
 async function generateAiDailyTip(weekNum) {
   const bodyEl = document.getElementById('aiDailyTipBody');
   if (bodyEl) {
-    bodyEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color:var(--primary);"></i> <span style="color:var(--text-muted);">Meminta tips harian terbaru dari Gemini AI untuk Minggu ke-${weekNum}...</span>`;
+    bodyEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color:var(--primary);"></i> <span style="color:var(--text-muted);">Meminta tips harian terbaru dari OpenRouter AI untuk Minggu ke-${weekNum}...</span>`;
   }
 
-  const savedKey = localStorage.getItem('bundacare_gemini_key');
+  const apiKey = getOpenRouterApiKey();
   let resultText = "";
 
-  if (savedKey && savedKey.startsWith('AIzaSy')) {
+  if (apiKey && apiKey.length >= 10) {
     try {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${savedKey}`;
-      const promptText = `Berikan 2 tips kesehatan harian terbaru, 1 rekomendasi nutrisi penting, dan 1 kalimat afirmasi positif untuk Ibu hamil pada Minggu Ke-${weekNum}. Tulis dalam format ringkas bullet points HTML dengan nada ramah dan hangat.`;
-      
-      const response = await fetch(url, {
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": "https://bundacare-one.vercel.app",
+          "X-Title": "BundaCare"
+        },
+        body: JSON.stringify({
+          model: "google/gemini-2.0-flash-lite-001",
+          messages: [
+            {
+              role: "system",
+              content: "Berikan 2 tips kesehatan harian terbaru, 1 rekomendasi nutrisi penting, dan 1 kalimat afirmasi positif untuk Ibu hamil. Tulis dalam format ringkas bullet points HTML dengan nada ramah dan hangat."
+            },
+            {
+              role: "user",
+              content: `Panduan harian kehamilan untuk Minggu Ke-${weekNum}.`
+            }
+          ]
+        })
       });
 
       if (response.ok) {
         const data = await response.json();
-        if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]) {
-          resultText = data.candidates[0].content.parts[0].text
+        if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
+          resultText = data.choices[0].message.content
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\n/g, '<br>');
         }
       }
     } catch (err) {
-      console.warn("Error fetching AI daily tip:", err);
+      console.warn("Error fetching AI daily tip from OpenRouter:", err);
     }
   }
 
@@ -629,31 +643,38 @@ function saveDiaryEntry(e) {
   showToast("Catatan harian Bunda berhasil disimpan! 💕");
 }
 
-// --- AI Chatbot Assistant ---
+const OPENROUTER_DEFAULT_KEY = "";
+
+function getOpenRouterApiKey() {
+  const saved = localStorage.getItem('bundacare_openrouter_key');
+  return (saved && saved.trim()) ? saved.trim() : "";
+}
+
+// --- AI Chatbot Assistant (OpenRouter AI Engine) ---
 function saveCustomApiKey() {
   const input = document.getElementById('customApiKeyInput');
   const val = input ? input.value.trim() : '';
   if (!val || val.length < 10) {
-    showToast("Silakan masukkan API Key Gemini yang valid.");
+    showToast("Silakan masukkan OpenRouter API Key yang valid (sk-or-v1-...).");
     return;
   }
-  localStorage.setItem('bundacare_gemini_key', val);
-  showToast("API Key Gemini berhasil disimpan! 🔑");
+  localStorage.setItem('bundacare_openrouter_key', val);
+  showToast("OpenRouter API Key berhasil disimpan! 🔑");
   updateAiStatusBadge();
 }
 
 function updateAiStatusBadge() {
   const badge = document.getElementById('aiStatusBadge');
   const input = document.getElementById('customApiKeyInput');
-  const key = localStorage.getItem('bundacare_gemini_key');
+  const key = getOpenRouterApiKey();
   
-  if (input && key) {
+  if (input) {
     input.value = key;
   }
 
   if (badge) {
-    if (key && key.length >= 10) {
-      badge.innerHTML = `<i class="fa-solid fa-circle-check" style="color:var(--accent-teal);"></i> Gemini API Connected`;
+    if (key && key.startsWith('sk-or-v1')) {
+      badge.innerHTML = `<i class="fa-solid fa-circle-check" style="color:var(--accent-teal);"></i> OpenRouter API Connected`;
     } else {
       badge.innerHTML = `<i class="fa-solid fa-heart-pulse" style="color:var(--primary);"></i> BundaCare Health Engine`;
     }
@@ -679,55 +700,70 @@ async function sendChatMessage(e) {
   const botBubble = document.createElement('div');
   botBubble.className = 'chat-bubble bot';
   botBubble.id = 'aiTypingIndicator';
-  botBubble.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color:var(--primary);"></i> <span style="color:var(--text-muted);">Asisten AI sedang berpikir...</span>`;
+  botBubble.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color:var(--primary);"></i> <span style="color:var(--text-muted);">Asisten OpenRouter AI sedang berpikir...</span>`;
   messagesBox.appendChild(botBubble);
   messagesBox.scrollTop = messagesBox.scrollHeight;
 
-  // Fetch Response from Gemini API or Smart Fallback Engine
+  // Fetch Response from OpenRouter API or Smart Fallback Engine
   const aiAnswer = await fetchGeminiAiResponse(query);
   botBubble.innerHTML = aiAnswer;
   messagesBox.scrollTop = messagesBox.scrollHeight;
 }
 
 async function fetchGeminiAiResponse(query) {
-  const savedKey = localStorage.getItem('bundacare_gemini_key');
-  const apiKey = (savedKey && savedKey.trim()) ? savedKey.trim() : "";
+  const apiKey = getOpenRouterApiKey();
 
   if (apiKey && apiKey.length >= 10) {
-    const candidateEndpoints = [
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
-      `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`
+    const candidateModels = [
+      "google/gemini-2.0-flash-lite-001",
+      "google/gemini-1.5-flash",
+      "meta-llama/llama-3.3-70b-instruct",
+      "deepseek/deepseek-r1-distill-llama-70b"
     ];
 
-    for (const url of candidateEndpoints) {
+    for (const modelName of candidateModels) {
       try {
-        const promptText = `Anda adalah Asisten Medis Kehamilan BundaCare. Berikan jawaban yang hangat, ramah, empati, ilmiah, dan praktis untuk ibu hamil di Indonesia. Pertanyaan Ibu Hamil: "${query}"`;
-        
-        const response = await fetch(url, {
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Authorization": `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://bundacare-one.vercel.app",
+            "X-Title": "BundaCare"
+          },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: promptText }] }]
+            model: modelName,
+            messages: [
+              {
+                role: "system",
+                content: "Anda adalah Asisten Medis Kehamilan BundaCare. Berikan jawaban yang hangat, ramah, empati, ilmiah, dan praktis untuk ibu hamil di Indonesia. Jika pertanyaan berhubungan dengan sholat/rukuk/puasa/ibadah, jelaskan sudut pandang kesehatan dan kemudahan (rukhshah) dalam Islam."
+              },
+              {
+                role: "user",
+                content: query
+              }
+            ]
           })
         });
 
         if (response.ok) {
           const data = await response.json();
-          if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]) {
-            let text = data.candidates[0].content.parts[0].text;
+          if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
+            let text = data.choices[0].message.content;
             return text
               .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
               .replace(/\n/g, '<br>');
           }
-        } else if (response.status !== 404) {
+        } else {
           const errJson = await response.json().catch(() => ({}));
-          console.warn("Gemini API HTTP Error:", response.status, errJson);
-          showToast(`Gemini API Error (${response.status}): ${errJson.error?.message || 'Cek kembali API key'}`);
-          break;
+          console.warn(`OpenRouter API error for model ${modelName}:`, response.status, errJson);
+          if (response.status === 401 || response.status === 402) {
+            showToast(`OpenRouter API Error (${response.status}): ${errJson.error?.message || 'Cek kredit / API key'}`);
+            break;
+          }
         }
       } catch (err) {
-        console.warn(`Gemini API call error:`, err);
+        console.warn(`OpenRouter API fetch exception:`, err);
       }
     }
   }
