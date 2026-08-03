@@ -1282,12 +1282,12 @@ body {
 }
 
 .profile-avatar-xl {
-  width: 145px;
-  height: 145px;
+  width: 175px;
+  height: 175px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4.5px solid white;
-  box-shadow: 0 12px 36px var(--primary-glow), var(--glass-shadow-hover);
+  border: 5px solid white;
+  box-shadow: 0 14px 40px var(--primary-glow), var(--glass-shadow-hover);
   transition: var(--transition-smooth);
 }
 
@@ -1297,8 +1297,8 @@ body {
 
 @media (max-width: 768px) {
   .profile-avatar-xl {
-    width: 130px;
-    height: 130px;
+    width: 155px;
+    height: 155px;
   }
 }
 

@@ -180,6 +180,13 @@ function updateDashboard() {
   document.getElementById('profEmergency').innerText = p.emergency;
   document.getElementById('profDoctor').innerText = p.doctor;
   document.getElementById('profAllergy').innerText = p.allergy;
+
+  if (p.avatar) {
+    const mainAvatar = document.querySelector('.profile-avatar-xl');
+    if (mainAvatar) mainAvatar.src = p.avatar;
+    const sideAvatar = document.getElementById('sidebarAvatar');
+    if (sideAvatar) sideAvatar.src = p.avatar;
+  }
 }
 
 // Render Dashboard Short Medicine List (Front View - Checkbox Only)
@@ -423,29 +430,62 @@ function saveNewAnc(e) {
   e.target.reset();
 }
 
+let currentUploadedAvatarBase64 = null;
+
+function previewAvatarPhoto(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    currentUploadedAvatarBase64 = evt.target.result;
+    const previewDiv = document.getElementById('editAvatarPreview');
+    const imgTag = document.getElementById('editAvatarImgTag');
+    if (imgTag) imgTag.src = currentUploadedAvatarBase64;
+    if (previewDiv) previewDiv.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
 // --- Profile Update Logic ---
 function saveProfile(e) {
   e.preventDefault();
   appState.profile.name = document.getElementById('editName').value;
+  appState.profile.email = document.getElementById('editEmail').value;
   appState.profile.hpht = document.getElementById('editHpht').value;
   appState.profile.goldar = document.getElementById('editGoldar').value;
   appState.profile.bbAwal = Number(document.getElementById('editBbAwal').value);
   appState.profile.bbSekarang = Number(document.getElementById('editBbSekarang').value);
+  appState.profile.tb = Number(document.getElementById('editTb').value);
   appState.profile.emergency = document.getElementById('editEmergency').value;
+  appState.profile.doctor = document.getElementById('editDoctor').value;
+  appState.profile.allergy = document.getElementById('editAllergy').value;
+
+  if (currentUploadedAvatarBase64) {
+    appState.profile.avatar = currentUploadedAvatarBase64;
+  }
 
   saveState();
   updateDashboard();
   closeModal('modalEditProfile');
-  showToast("Profil Bunda berhasil diperbarui! ✨");
+  showToast("Profil Kehamilan Bunda berhasil diperbarui! ✨");
 }
 
 function populateProfileModal() {
-  document.getElementById('editName').value = appState.profile.name;
-  document.getElementById('editHpht').value = appState.profile.hpht;
-  document.getElementById('editGoldar').value = appState.profile.goldar;
-  document.getElementById('editBbAwal').value = appState.profile.bbAwal;
-  document.getElementById('editBbSekarang').value = appState.profile.bbSekarang;
-  document.getElementById('editEmergency').value = appState.profile.emergency;
+  document.getElementById('editName').value = appState.profile.name || '';
+  document.getElementById('editEmail').value = appState.profile.email || '';
+  document.getElementById('editHpht').value = appState.profile.hpht || '';
+  document.getElementById('editGoldar').value = appState.profile.goldar || 'O+';
+  document.getElementById('editBbAwal').value = appState.profile.bbAwal || 55;
+  document.getElementById('editBbSekarang').value = appState.profile.bbSekarang || 62;
+  document.getElementById('editTb').value = appState.profile.tb || 162;
+  document.getElementById('editEmergency').value = appState.profile.emergency || '';
+  document.getElementById('editDoctor').value = appState.profile.doctor || '';
+  document.getElementById('editAllergy').value = appState.profile.allergy || '';
+  
+  currentUploadedAvatarBase64 = null;
+  const previewDiv = document.getElementById('editAvatarPreview');
+  if (previewDiv) previewDiv.style.display = 'none';
 }
 
 // --- Calendar Logic ---

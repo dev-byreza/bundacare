@@ -616,16 +616,31 @@
 
   <!-- MODAL 3: Edit Profil -->
   <div class="modal-overlay" id="modalEditProfile">
-    <div class="modal-card glass-panel">
+    <div class="modal-card glass-panel" style="max-width:550px;">
       <div class="modal-header">
         <h3><i class="fa-solid fa-pen-to-square" style="color:var(--primary);"></i> Edit Data Profil Kehamilan</h3>
         <button class="modal-close-btn" onclick="closeModal('modalEditProfile')"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <form onsubmit="saveProfile(event)">
-        <div class="form-group">
-          <label>Nama Lengkap Ibu:</label>
-          <input type="text" id="editName" class="form-control" required>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nama Lengkap Ibu:</label>
+            <input type="text" id="editName" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Email Ibu:</label>
+            <input type="email" id="editEmail" class="form-control" placeholder="cth: aulia@example.com" required>
+          </div>
         </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-camera" style="color:var(--primary);"></i> Upload / Ganti Foto Profil (Opsional):</label>
+          <input type="file" id="editAvatarInput" accept="image/*" class="form-control" onchange="previewAvatarPhoto(event)">
+          <div id="editAvatarPreview" style="margin-top:8px; display:none;">
+            <img id="editAvatarImgTag" src="" alt="Preview Avatar" style="width:70px; height:70px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+          </div>
+        </div>
+
         <div class="form-row">
           <div class="form-group">
             <label>Tanggal HPHT:</label>
@@ -638,24 +653,46 @@
               <option value="A+">A+</option>
               <option value="B+">B+</option>
               <option value="AB+">AB+</option>
+              <option value="O-">O-</option>
+              <option value="A-">A-</option>
+              <option value="B-">B-</option>
+              <option value="AB-">AB-</option>
             </select>
           </div>
         </div>
+
         <div class="form-row">
           <div class="form-group">
             <label>BB Awal (kg):</label>
-            <input type="number" id="editBbAwal" class="form-control" required>
+            <input type="number" id="editBbAwal" class="form-control" step="0.1" required>
           </div>
           <div class="form-group">
             <label>BB Sekarang (kg):</label>
-            <input type="number" id="editBbSekarang" class="form-control" required>
+            <input type="number" id="editBbSekarang" class="form-control" step="0.1" required>
+          </div>
+          <div class="form-group">
+            <label>Tinggi (cm):</label>
+            <input type="number" id="editTb" class="form-control" placeholder="162" required>
           </div>
         </div>
-        <div class="form-group">
-          <label>Kontak Darurat (Nama & No. Telp):</label>
-          <input type="text" id="editEmergency" class="form-control" required>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Kontak Darurat (Nama & No. Telp):</label>
+            <input type="text" id="editEmergency" class="form-control" placeholder="cth: Budi Santoso (0812-3456-7890)" required>
+          </div>
+          <div class="form-group">
+            <label>Dokter / Bidan Pendamping:</label>
+            <input type="text" id="editDoctor" class="form-control" placeholder="cth: dr. Anisa Sp.OG" required>
+          </div>
         </div>
-        <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Perbarui Profil</button>
+
+        <div class="form-group">
+          <label>Riwayat Alergi & Catatan Medis:</label>
+          <input type="text" id="editAllergy" class="form-control" placeholder="cth: Alergi Obat Penisilin, Asma Ringan">
+        </div>
+
+        <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Perbarui Profil Bunda</button>
       </form>
     </div>
   </div>
