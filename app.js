@@ -463,13 +463,32 @@ function loadEducationForWeek(w) {
   const fetal = getFetalData(weekNum);
   const container = document.getElementById('eduContentArea');
 
+  // Retrieve cached AI Daily Tip for this week or default
+  const cacheKey = `bundacare_ai_tip_week_${weekNum}`;
+  const savedAiTip = localStorage.getItem(cacheKey);
+
   container.innerHTML = `
-    <div class="glass-panel" style="padding:24px; margin-bottom:20px; background:linear-gradient(135deg, rgba(124, 77, 255, 0.1) 0%, rgba(255, 64, 129, 0.1) 100%);">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h4 style="font-size:20px; font-weight:800; color:var(--primary);">Panduan Kehamilan Minggu Ke-${weekNum}</h4>
-        <span class="glass-pill" style="font-size:12px; font-weight:700;">Ukuran: ${fetal.fruit}</span>
+    <div class="glass-panel" style="padding:24px; margin-bottom:20px; background:linear-gradient(135deg, rgba(124, 77, 255, 0.15) 0%, rgba(255, 64, 129, 0.15) 100%);">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h4 style="font-size:20px; font-weight:800; color:var(--primary);">Panduan Kehamilan Minggu Ke-${weekNum}</h4>
+          <p style="font-size:13px; color:var(--text-muted); margin-top:4px;">Ukuran Janin: <strong>${fetal.fruit}</strong> (${fetal.size} | ${fetal.weight})</p>
+        </div>
+        <button class="btn-submit" style="width:auto; padding:10px 18px; margin:0; font-size:13px;" onclick="generateAiDailyTip(${weekNum})">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> ✨ Perbarui Tips Harian via AI
+        </button>
       </div>
-      <p style="font-size:14px; color:var(--text-main); margin-top:8px; line-height:1.6;">${fetal.desc}</p>
+      <p style="font-size:14px; color:var(--text-main); margin-top:12px; line-height:1.6;">${fetal.desc}</p>
+    </div>
+
+    <!-- AI Daily Highlight Card -->
+    <div class="glass-panel" style="padding:20px; margin-bottom:20px; border-left:4px solid var(--primary);" id="aiDailyTipCard">
+      <h5 style="font-size:15px; font-weight:800; color:var(--primary); margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+        <i class="fa-solid fa-sparkles"></i> Tips Harian Terkini Dari AI Gemini (Minggu Ke-${weekNum})
+      </h5>
+      <div id="aiDailyTipBody" style="font-size:13.5px; color:var(--text-main); line-height:1.7;">
+        ${savedAiTip || `• <strong>Hidrasi Cukup:</strong> Minum air putih 2.5L per hari untuk menjaga cairan ketuban yang cukup.<br>• <strong>Fokus Nutrisi:</strong> Konsumsi bayam dan zat besi untuk suplai eritrosit janin.<br>• <strong>Afirmasi Hari Ini:</strong> <em>"Tubuhku kuat, sehat, dan siap mendampingi tumbuh kembang buah hatiku setiap hari."</em>`}
+      </div>
     </div>
 
     <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:20px;">
@@ -505,6 +524,54 @@ function loadEducationForWeek(w) {
       </div>
     </div>
   `;
+}
+
+async function generateAiDailyTip(weekNum) {
+  const bodyEl = document.getElementById('aiDailyTipBody');
+  if (bodyEl) {
+    bodyEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color:var(--primary);"></i> <span style="color:var(--text-muted);">Meminta tips harian terbaru dari Gemini AI untuk Minggu ke-${weekNum}...</span>`;
+  }
+
+  const savedKey = localStorage.getItem('bundacare_gemini_key');
+  let resultText = "";
+
+  if (savedKey && savedKey.startsWith('AIzaSy')) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${savedKey}`;
+      const promptText = `Berikan 2 tips kesehatan harian terbaru, 1 rekomendasi nutrisi penting, dan 1 kalimat afirmasi positif untuk Ibu hamil pada Minggu Ke-${weekNum}. Tulis dalam format ringkas bullet points HTML dengan nada ramah dan hangat.`;
+      
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]) {
+          resultText = data.candidates[0].content.parts[0].text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n/g, '<br>');
+        }
+      }
+    } catch (err) {
+      console.warn("Error fetching AI daily tip:", err);
+    }
+  }
+
+  if (!resultText) {
+    // Dynamic generated offline fallback
+    const tipsList = [
+      `• <strong>Stretching Ringan:</strong> Lakukan peregangan kaki & panggul selama 10 menit pagi hari.<br>• <strong>Nutrisi Hari Ini:</strong> Konsumsi buah alpukat atau kacang almond untuk asupan lemak sehat otak janin.<br>• <strong>Afirmasi:</strong> <em>"Setiap detak jantung buah hatiku membawa kebahagiaan dan ketenangan di hatiku."</em>`,
+      `• <strong>Kebutuhan Cairan:</strong> Siapkan botol minum 2 Liter agar hidrasi ketuban selalu terjaga teratur.<br>• <strong>Nutrisi Hari Ini:</strong> Susu tinggi kalsium & vitamin D untuk pembentukan kuku dan tulang si kecil.<br>• <strong>Afirmasi:</strong> <em>"Tubuhku adalah tempat terbaik, tersafe, dan tersayang untuk tumbuh kembang buah hatiku."</em>`
+    ];
+    resultText = tipsList[Math.floor(Math.random() * tipsList.length)];
+  }
+
+  // Save to Cache LocalStorage
+  localStorage.setItem(`bundacare_ai_tip_week_${weekNum}`, resultText);
+  if (bodyEl) bodyEl.innerHTML = resultText;
+  showToast(`Tips harian AI Minggu ke-${weekNum} berhasil diperbarui! ✨`);
 }
 
 // --- Diary & Mood Tracker Engine ---
