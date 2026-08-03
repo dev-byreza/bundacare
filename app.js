@@ -694,33 +694,37 @@ async function fetchGeminiAiResponse(query) {
   const apiKey = (savedKey && savedKey.trim()) ? savedKey.trim() : "";
 
   if (apiKey && apiKey.length >= 10) {
-    try {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-      const promptText = `Anda adalah Asisten Medis Kehamilan BundaCare. Berikan jawaban yang hangat, ramah, empati, ilmiah, dan praktis untuk ibu hamil di Indonesia. Jika pertanyaan berhubungan dengan sholat/rukuk/puasa/ibadah, jelaskan sudut pandang kesehatan dan kemudahan (rukhshah) dalam Islam. Pertanyaan Ibu Hamil: "${query}"`;
-      
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: promptText }] }]
-        })
-      });
+    const candidateModels = ['gemini-1.5-flash-latest', 'gemini-2.5-flash', 'gemini-1.5-pro', 'gemini-pro'];
+    for (const modelName of candidateModels) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+        const promptText = `Anda adalah Asisten Medis Kehamilan BundaCare. Berikan jawaban yang hangat, ramah, empati, ilmiah, dan praktis untuk ibu hamil di Indonesia. Jika pertanyaan berhubungan dengan sholat/rukuk/puasa/ibadah, jelaskan sudut pandang kesehatan dan kemudahan (rukhshah) dalam Islam. Pertanyaan Ibu Hamil: "${query}"`;
+        
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: promptText }] }]
+          })
+        });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]) {
-          let text = data.candidates[0].content.parts[0].text;
-          return text
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\n/g, '<br>');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]) {
+            let text = data.candidates[0].content.parts[0].text;
+            return text
+              .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+              .replace(/\n/g, '<br>');
+          }
+        } else if (response.status !== 404) {
+          const errJson = await response.json().catch(() => ({}));
+          console.warn("Gemini API HTTP Error:", response.status, errJson);
+          showToast(`Gemini API Error (${response.status}): ${errJson.error?.message || 'Cek kembali API key'}`);
+          break;
         }
-      } else {
-        const errJson = await response.json().catch(() => ({}));
-        console.warn("Gemini API HTTP Error:", response.status, errJson);
-        showToast(`Gemini API Error (${response.status}): ${errJson.error?.message || 'Cek kembali API key'}`);
+      } catch (err) {
+        console.warn(`Gemini API call failed for model ${modelName}:`, err);
       }
-    } catch (err) {
-      console.warn("Gemini API call failed, switching to local health knowledge engine:", err);
     }
   }
 
