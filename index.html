@@ -126,6 +126,20 @@
 
       <!-- TAB 1: DASHBOARD OVERVIEW -->
       <section class="tab-view active" id="tab-dashboard">
+
+        <!-- Welcome Banner with Profile -->
+        <div class="dash-welcome-banner glass-panel">
+          <img src="assets/avatar.png" alt="Foto Profil" class="dash-welcome-avatar" id="dashWelcomeAvatar">
+          <div class="dash-welcome-text">
+            <p class="dash-welcome-greeting">Selamat Datang 👋</p>
+            <h3 class="dash-welcome-name" id="dashWelcomeName">Aulia Cantik 💕</h3>
+            <p class="dash-welcome-sub" id="dashWelcomeSub">Trimester 2 • Minggu Ke-24</p>
+          </div>
+          <button class="btn-submit btn-edit-compact" onclick="openModal('modalEditProfile')">
+            <i class="fa-solid fa-pen-to-square"></i> Edit
+          </button>
+        </div>
+
         <!-- Hero Pregnancy Tracker Card -->
         <div class="hero-tracker-card glass-panel">
           <div class="hero-header">

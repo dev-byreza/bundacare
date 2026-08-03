@@ -177,6 +177,14 @@ function updateDashboard() {
   // Render Dashboard Medicines Checklist
   renderDashboardMedList();
 
+  // Update Welcome Banner
+  const welcomeAvatar = document.getElementById('dashWelcomeAvatar');
+  if (welcomeAvatar) welcomeAvatar.src = p.avatar || 'assets/avatar.png';
+  const welcomeName = document.getElementById('dashWelcomeName');
+  if (welcomeName) welcomeName.innerText = `${p.name} 💕`;
+  const welcomeSub = document.getElementById('dashWelcomeSub');
+  if (welcomeSub) welcomeSub.innerText = `${calc.trimesterLabel} • Minggu Ke-${calc.weeks}`;
+
   // Update Profile Tab Details (null-safe)
   const safe = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
   safe('profNameDisplay', p.name);
