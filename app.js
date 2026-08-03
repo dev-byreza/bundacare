@@ -509,24 +509,23 @@ function previewAvatarPhoto(e) {
     const imgEl = document.getElementById('cropperImage');
     if (!imgEl) return;
 
-    // Set image source and open crop modal
-    imgEl.src = evt.target.result;
-
     // Destroy previous cropper instance if any
     if (avatarCropperInstance) {
       avatarCropperInstance.destroy();
       avatarCropperInstance = null;
     }
 
+    imgEl.src = evt.target.result;
     openModal('modalCropAvatar');
 
-    // Wait for image to render before initializing Cropper
-    imgEl.onload = function() {
+    // Delay Cropper init slightly so modal flex layout is calculated
+    setTimeout(() => {
+      if (avatarCropperInstance) avatarCropperInstance.destroy();
       avatarCropperInstance = new Cropper(imgEl, {
         aspectRatio: 1,          // Square crop for profile photo
         viewMode: 1,             // Keep image within container
         dragMode: 'move',
-        autoCropArea: 0.85,
+        autoCropArea: 0.9,
         restore: false,
         guides: true,
         center: true,
@@ -536,38 +535,59 @@ function previewAvatarPhoto(e) {
         toggleDragModeOnDblclick: false,
         background: false,
       });
-    };
-
-    // If image is already cached (same src), trigger manually
-    if (imgEl.complete) imgEl.onload();
+    }, 150);
   };
   reader.readAsDataURL(file);
 }
 
-// Apply the crop and save result as Base64
+// Apply the crop, save immediately to state & update previews
 function applyCrop() {
   if (!avatarCropperInstance) {
-    showToast('Pilih foto terlebih dahulu.');
+    showToast('Silakan pilih foto terlebih dahulu.');
     return;
   }
 
-  const canvas = avatarCropperInstance.getCroppedCanvas({
-    width: 400,
-    height: 400,
-    imageSmoothingEnabled: true,
-    imageSmoothingQuality: 'high',
-  });
+  try {
+    const canvas = avatarCropperInstance.getCroppedCanvas({
+      width: 400,
+      height: 400,
+      imageSmoothingEnabled: true,
+      imageSmoothingQuality: 'high',
+    });
 
-  currentUploadedAvatarBase64 = canvas.toDataURL('image/jpeg', 0.88);
+    if (!canvas) {
+      showToast('Gagal memotong gambar. Coba file gambar lain.');
+      return;
+    }
 
-  // Show preview inside Edit Profile modal
-  const previewDiv = document.getElementById('editAvatarPreview');
-  const imgTag = document.getElementById('editAvatarImgTag');
-  if (imgTag) imgTag.src = currentUploadedAvatarBase64;
-  if (previewDiv) previewDiv.style.display = 'block';
+    currentUploadedAvatarBase64 = canvas.toDataURL('image/jpeg', 0.88);
 
-  closeCropModal();
-  showToast('Foto berhasil dipotong! Klik Simpan Profil untuk menyimpan. ✂️');
+    // Update state immediately
+    appState.profile.avatar = currentUploadedAvatarBase64;
+    saveState();
+    updateDashboard();
+
+    // Show preview inside Edit Profile modal
+    const previewDiv = document.getElementById('editAvatarPreview');
+    const imgTag = document.getElementById('editAvatarImgTag');
+    if (imgTag) imgTag.src = currentUploadedAvatarBase64;
+    if (previewDiv) previewDiv.style.display = 'block';
+
+    // Close crop modal
+    closeCropModal();
+
+    // Ensure Edit Profile modal stays open
+    const editModal = document.getElementById('modalEditProfile');
+    if (editModal) {
+      editModal.classList.add('active');
+      editModal.style.display = 'flex';
+    }
+
+    showToast('Foto profil berhasil dipotong & diperbarui! ✂️✨');
+  } catch (err) {
+    console.error('Crop error:', err);
+    showToast('Terjadi kesalahan saat memotong gambar.');
+  }
 }
 
 // Close crop modal and destroy cropper
@@ -1133,11 +1153,15 @@ function switchTab(tabId) {
 
 // --- Modals & Toasts ---
 function openModal(modalId) {
-  // Close all other modals first
-  document.querySelectorAll('.modal-overlay').forEach(m => {
-    m.classList.remove('active');
-    m.style.display = '';
-  });
+  // Only close other modals if not opening a stacked sub-modal
+  if (modalId !== 'modalCropAvatar' && modalId !== 'modalUsgZoom') {
+    document.querySelectorAll('.modal-overlay').forEach(m => {
+      if (m.id !== 'modalCropAvatar' && m.id !== 'modalUsgZoom') {
+        m.classList.remove('active');
+        m.style.display = '';
+      }
+    });
+  }
   const el = document.getElementById(modalId);
   if (el) {
     el.classList.add('active');
