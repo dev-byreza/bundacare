@@ -54,13 +54,21 @@ const DEFAULT_STATE = {
   ]
 };
 
-// Load or Initialize State
+// Load or Initialize State (with migration guard for new fields)
 let appState = JSON.parse(localStorage.getItem('bundacare_state')) || DEFAULT_STATE;
 
+// Migration: ensure all required fields exist (backward compat for old saves)
 if (!appState.profile.name || appState.profile.name === "Sarah Pertiwi") {
   appState.profile.name = "Aulia Cantik";
   appState.profile.email = "aulia.cantik@example.com";
 }
+if (!appState.profile.email)    appState.profile.email    = DEFAULT_STATE.profile.email;
+if (!appState.profile.tb)       appState.profile.tb       = DEFAULT_STATE.profile.tb;
+if (!appState.profile.doctor)   appState.profile.doctor   = DEFAULT_STATE.profile.doctor;
+if (!appState.profile.allergy)  appState.profile.allergy  = DEFAULT_STATE.profile.allergy;
+if (!appState.medicines)        appState.medicines        = DEFAULT_STATE.medicines;
+if (!appState.ancRecords)       appState.ancRecords       = DEFAULT_STATE.ancRecords;
+if (!appState.diaryLogs)        appState.diaryLogs        = DEFAULT_STATE.diaryLogs;
 
 function saveState() {
   localStorage.setItem('bundacare_state', JSON.stringify(appState));
@@ -94,7 +102,7 @@ function getFetalData(weekNum) {
 // --- Pregnancy Calculation Engine ---
 function calculatePregnancyDetails(hphtStr) {
   const hpht = new Date(hphtStr);
-  const today = new Date("2026-08-03"); // Standard system anchor date
+  const today = new Date(); // Live current date
   
   const diffMs = today - hpht;
   const totalDays = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
@@ -518,7 +526,8 @@ function renderCalendar() {
   for (let day = 1; day <= lastDate; day++) {
     const cell = document.createElement('div');
     cell.className = 'cal-date-cell';
-    if (day === 3 && month === 7 && year === 2026) {
+    const now = new Date();
+    if (day === now.getDate() && month === now.getMonth() && year === now.getFullYear()) {
       cell.classList.add('today');
     }
 
@@ -734,9 +743,10 @@ function saveDiaryEntry(e) {
     return;
   }
 
+  const todayFormatted = formatDateIndo(new Date());
   const newLog = {
     id: Date.now(),
-    date: "03 Agu 2026",
+    date: todayFormatted,
     moodEmoji: emoji,
     moodLabel: label,
     complaint,
@@ -979,6 +989,8 @@ function switchTab(tabId) {
 function openModal(modalId) {
   const el = document.getElementById(modalId);
   if (el) el.classList.add('active');
+  // Auto-populate specific modals when opened
+  if (modalId === 'modalEditProfile') populateProfileModal();
 }
 
 function closeModal(modalId) {
