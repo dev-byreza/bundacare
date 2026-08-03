@@ -294,6 +294,7 @@ function executeDeleteMed(id) {
   updateDashboard();
   renderFullMedList();
   closeModal('modalConfirmDelete');
+  switchTab('obat');
   showToast(`Jadwal obat ${medName} telah dihapus. 🗑️`);
   pendingDeleteMedId = null;
 }

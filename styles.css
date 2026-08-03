@@ -1282,17 +1282,24 @@ body {
 }
 
 .profile-avatar-xl {
-  width: 110px;
-  height: 110px;
+  width: 145px;
+  height: 145px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid white;
-  box-shadow: 0 10px 30px var(--primary-glow), var(--glass-shadow-hover);
+  border: 4.5px solid white;
+  box-shadow: 0 12px 36px var(--primary-glow), var(--glass-shadow-hover);
   transition: var(--transition-smooth);
 }
 
 .profile-avatar-xl:hover {
   transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .profile-avatar-xl {
+    width: 130px;
+    height: 130px;
+  }
 }
 
 .profile-user-name-xl {
