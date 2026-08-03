@@ -497,21 +497,92 @@ function saveNewAnc(e) {
 }
 
 let currentUploadedAvatarBase64 = null;
+let avatarCropperInstance = null;
 
+// Opens Cropper.js modal when user selects a file
 function previewAvatarPhoto(e) {
   const file = e.target.files && e.target.files[0];
   if (!file) return;
-  
+
   const reader = new FileReader();
   reader.onload = function(evt) {
-    currentUploadedAvatarBase64 = evt.target.result;
-    const previewDiv = document.getElementById('editAvatarPreview');
-    const imgTag = document.getElementById('editAvatarImgTag');
-    if (imgTag) imgTag.src = currentUploadedAvatarBase64;
-    if (previewDiv) previewDiv.style.display = 'block';
+    const imgEl = document.getElementById('cropperImage');
+    if (!imgEl) return;
+
+    // Set image source and open crop modal
+    imgEl.src = evt.target.result;
+
+    // Destroy previous cropper instance if any
+    if (avatarCropperInstance) {
+      avatarCropperInstance.destroy();
+      avatarCropperInstance = null;
+    }
+
+    openModal('modalCropAvatar');
+
+    // Wait for image to render before initializing Cropper
+    imgEl.onload = function() {
+      avatarCropperInstance = new Cropper(imgEl, {
+        aspectRatio: 1,          // Square crop for profile photo
+        viewMode: 1,             // Keep image within container
+        dragMode: 'move',
+        autoCropArea: 0.85,
+        restore: false,
+        guides: true,
+        center: true,
+        highlight: false,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+        background: false,
+      });
+    };
+
+    // If image is already cached (same src), trigger manually
+    if (imgEl.complete) imgEl.onload();
   };
   reader.readAsDataURL(file);
 }
+
+// Apply the crop and save result as Base64
+function applyCrop() {
+  if (!avatarCropperInstance) {
+    showToast('Pilih foto terlebih dahulu.');
+    return;
+  }
+
+  const canvas = avatarCropperInstance.getCroppedCanvas({
+    width: 400,
+    height: 400,
+    imageSmoothingEnabled: true,
+    imageSmoothingQuality: 'high',
+  });
+
+  currentUploadedAvatarBase64 = canvas.toDataURL('image/jpeg', 0.88);
+
+  // Show preview inside Edit Profile modal
+  const previewDiv = document.getElementById('editAvatarPreview');
+  const imgTag = document.getElementById('editAvatarImgTag');
+  if (imgTag) imgTag.src = currentUploadedAvatarBase64;
+  if (previewDiv) previewDiv.style.display = 'block';
+
+  closeCropModal();
+  showToast('Foto berhasil dipotong! Klik Simpan Profil untuk menyimpan. ✂️');
+}
+
+// Close crop modal and destroy cropper
+function closeCropModal() {
+  closeModal('modalCropAvatar');
+  if (avatarCropperInstance) {
+    avatarCropperInstance.destroy();
+    avatarCropperInstance = null;
+  }
+  // Reset file input so same file can be re-selected
+  const fileInput = document.getElementById('editAvatarInput');
+  if (fileInput) fileInput.value = '';
+}
+
+
 
 // --- Profile Update Logic ---
 function saveProfile(e) {
