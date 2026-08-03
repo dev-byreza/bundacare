@@ -1317,12 +1317,11 @@ body {
   text-overflow: ellipsis;
 }
 
-/* Compact Viewport AI Chat Container */
+/* 100% Full Viewport AI Chat Container */
 .chat-single-viewport-container {
   display: flex;
   flex-direction: column;
-  height: 380px;
-  max-height: 52vh;
+  height: calc(100vh - 140px);
   padding: 0;
   overflow: hidden;
   border-radius: var(--radius-lg);
@@ -1461,9 +1460,8 @@ body {
   .ai-key-bar button {
     width: 100% !important;
   }
-  .chat-container {
-    height: calc(100vh - 280px);
-    min-height: 380px;
+  .chat-single-viewport-container {
+    height: calc(100vh - 150px);
   }
   .chat-messages {
     padding: 10px;
