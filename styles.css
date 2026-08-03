@@ -1135,48 +1135,93 @@ body {
 .dot-doctor { background: var(--accent-pink); }
 .dot-anc { background: var(--accent-teal); }
 
-/* USG & ANC Card Styles */
+/* USG & ANC Card Styles — Redesigned */
 .anc-card-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
-.anc-record-card {
-  padding: 20px;
-  border-radius: var(--radius-lg);
+/* New USG Record Card */
+.usg-record-card {
+  padding: 16px;
   display: flex;
-  gap: 20px;
-  align-items: center;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.usg-thumb-wrapper {
-  width: 110px;
-  height: 110px;
+/* Card Header Row */
+.usg-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.usg-card-title-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.usg-week-badge {
+  background: linear-gradient(135deg, var(--primary), var(--accent-pink));
+  color: white;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.usg-date-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+/* Photo + Stats Row */
+.usg-card-body {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+/* USG Photo */
+.usg-card-photo {
+  width: 100px;
+  height: 100px;
   border-radius: var(--radius-md);
   overflow: hidden;
-  border: 2px solid rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(14px);
-  box-shadow: 0 6px 16px rgba(124, 77, 255, 0.25);
+  border: 2.5px solid rgba(255,255,255,0.85);
+  box-shadow: 0 6px 18px rgba(124, 77, 255, 0.22);
   cursor: pointer;
   position: relative;
   flex-shrink: 0;
 }
 
-.usg-thumb-wrapper img {
+.usg-card-photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
-.usg-thumb-wrapper::after {
-  content: "🔍 Zoom";
+.usg-zoom-hint {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.45);
   color: white;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1184,9 +1229,72 @@ body {
   transition: var(--transition-smooth);
 }
 
-.usg-thumb-wrapper:hover::after {
+.usg-card-photo:hover .usg-zoom-hint {
   opacity: 1;
 }
+
+.usg-card-photo.no-img {
+  background: var(--primary-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: var(--primary);
+  cursor: default;
+}
+
+/* Stats 2x2 Grid */
+.usg-stats-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  min-width: 0;
+}
+
+.usg-stat-item {
+  background: var(--glass-bg);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border: 1px solid var(--glass-border-subtle);
+}
+
+.usg-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: 0.2px;
+}
+
+.usg-stat-val {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+/* Doctor Notes */
+.usg-card-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--primary-soft);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+
+.usg-card-note p {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
 
 /* AI Assistant Chat UI */
 .ai-key-bar {

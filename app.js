@@ -381,41 +381,70 @@ function renderAncList() {
   container.innerHTML = '';
 
   if (appState.ancRecords.length === 0) {
-    container.innerHTML = '<p style="font-size:13px; color:var(--text-muted); padding:16px;">Belum ada catatan pemeriksaan USG. Klik tombol "Catat USG Baru" untuk menambahkan.</p>';
+    container.innerHTML = `
+      <div style="text-align:center; padding:40px 20px; color:var(--text-muted);">
+        <i class="fa-solid fa-ultrasound" style="font-size:48px; opacity:0.3; margin-bottom:12px; display:block;"></i>
+        <p style="font-size:14px; font-weight:600;">Belum ada catatan pemeriksaan USG.</p>
+        <p style="font-size:12px; margin-top:4px;">Klik tombol "Catat USG Baru" untuk menambahkan.</p>
+      </div>`;
     return;
   }
 
   appState.ancRecords.forEach(anc => {
-    const card = document.createElement('div');
-    card.className = 'anc-record-card glass-panel';
     const usgPhoto = anc.usgImg || 'assets/ultrasound.png';
+    const card = document.createElement('div');
+    card.className = 'usg-record-card glass-panel';
     card.innerHTML = `
-      ${anc.hasUsg ? `
-        <div class="usg-thumb-wrapper" onclick="zoomUsgImage('${usgPhoto}')">
-          <img src="${usgPhoto}" alt="Foto USG">
+      <!-- Card Header -->
+      <div class="usg-card-header">
+        <div class="usg-card-title-block">
+          <span class="usg-week-badge"><i class="fa-solid fa-baby"></i> Minggu Ke-${anc.week}</span>
+          <span class="usg-date-tag"><i class="fa-regular fa-calendar"></i> ${anc.date}</span>
         </div>
-      ` : `
-        <div class="med-icon" style="width:110px; height:110px; border-radius:var(--radius-md); font-size:32px;">
-          <i class="fa-solid fa-stethoscope"></i>
-        </div>
-      `}
-      <div style="flex:1;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-          <h4 style="font-size:16px; font-weight:800;">Pemeriksaan Minggu Ke-${anc.week}</h4>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span class="glass-pill" style="font-size:12px; font-weight:700;"><i class="fa-regular fa-calendar"></i> ${anc.date}</span>
-            <button class="icon-btn-delete" onclick="deleteAncRecord(${anc.id})" title="Hapus Catatan USG">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
+        <button class="icon-btn-delete" onclick="deleteAncRecord(${anc.id})" title="Hapus">
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+      </div>
+
+      <!-- Photo + Stats Side by Side -->
+      <div class="usg-card-body">
+        <!-- USG Photo Thumbnail -->
+        ${anc.hasUsg ? `
+          <div class="usg-card-photo" onclick="zoomUsgImage('${usgPhoto}')">
+            <img src="${usgPhoto}" alt="Foto USG">
+            <div class="usg-zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+          </div>
+        ` : `
+          <div class="usg-card-photo no-img">
+            <i class="fa-solid fa-stethoscope"></i>
+          </div>
+        `}
+
+        <!-- Stats 2x2 Grid -->
+        <div class="usg-stats-grid">
+          <div class="usg-stat-item">
+            <span class="usg-stat-label"><i class="fa-solid fa-heart-pulse" style="color:var(--accent-pink);"></i> Tekanan Darah</span>
+            <span class="usg-stat-val">${anc.bp}</span>
+          </div>
+          <div class="usg-stat-item">
+            <span class="usg-stat-label"><i class="fa-solid fa-weight-scale" style="color:var(--primary);"></i> Berat Badan</span>
+            <span class="usg-stat-val">${anc.weight} kg</span>
+          </div>
+          <div class="usg-stat-item">
+            <span class="usg-stat-label"><i class="fa-solid fa-wave-square" style="color:var(--accent-teal);"></i> DJJ Janin</span>
+            <span class="usg-stat-val">${anc.djj}</span>
+          </div>
+          <div class="usg-stat-item">
+            <span class="usg-stat-label"><i class="fa-solid fa-ruler-vertical" style="color:var(--accent-amber);"></i> TFU</span>
+            <span class="usg-stat-val">${anc.tfu}</span>
           </div>
         </div>
-        <div style="display:flex; gap:12px; flex-wrap:wrap; margin:10px 0; font-size:13px; font-weight:700; color:var(--text-main);">
-          <span><i class="fa-solid fa-heart-pulse" style="color:var(--accent-pink);"></i> TD: ${anc.bp}</span>
-          <span><i class="fa-solid fa-weight-scale" style="color:var(--primary);"></i> BB: ${anc.weight} kg</span>
-          <span><i class="fa-solid fa-wave-square" style="color:var(--accent-teal);"></i> DJJ: ${anc.djj}</span>
-          <span><i class="fa-solid fa-ruler-vertical"></i> TFU: ${anc.tfu}</span>
-        </div>
-        <p style="font-size:13px; color:var(--text-muted); line-height:1.5;">${anc.note}</p>
+      </div>
+
+      <!-- Doctor Notes -->
+      <div class="usg-card-note">
+        <i class="fa-solid fa-notes-medical" style="color:var(--primary); flex-shrink:0;"></i>
+        <p>${anc.note}</p>
       </div>
     `;
     container.appendChild(card);
