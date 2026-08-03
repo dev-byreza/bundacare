@@ -83,6 +83,11 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+html {
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
+}
+
 body {
   background: var(--bg-gradient);
   color: var(--text-main);
@@ -181,6 +186,7 @@ body {
 /* Sidebar Navigation (Desktop) */
 .app-sidebar {
   width: 280px;
+  flex-shrink: 0;
   padding: 24px 16px;
   display: flex;
   flex-direction: column;
@@ -269,7 +275,7 @@ body {
   -webkit-backdrop-filter: blur(20px);
   border-color: var(--glass-border);
   color: var(--primary);
-  transform: translateX(4px);
+  transform: none;
   box-shadow: var(--glass-shadow);
 }
 
