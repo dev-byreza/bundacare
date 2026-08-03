@@ -251,136 +251,112 @@
         </div>
       </section>
 
-      <!-- TAB 2: PROFIL KEHAMILAN -->
+        <!-- TAB 2: PROFIL KEHAMILAN (Single Viewport 1-Screen) -->
       <section class="tab-view" id="tab-profil">
-        <div class="glass-panel" style="padding: 28px;">
-          <div class="section-header" style="flex-wrap:wrap; gap:12px;">
-            <h3><i class="fa-solid fa-address-card" style="color:var(--primary);"></i> Data Profil Ibu & Kehamilan</h3>
-            <button class="btn-submit" style="width:auto; padding:8px 18px; margin:0;" onclick="openModal('modalEditProfile')">
-              <i class="fa-solid fa-pen-to-square"></i> Edit Profil
+        <div class="glass-panel profile-container">
+          <!-- Compact Hero Profile Banner -->
+          <div class="profile-compact-header">
+            <div class="profile-user-info">
+              <img src="assets/avatar.png" alt="Avatar" class="profile-avatar-thumb">
+              <div>
+                <h3 id="profNameDisplay" class="profile-user-name">Aulia Cantik</h3>
+                <p id="profEmailDisplay" class="profile-user-email">aulia.cantik@example.com</p>
+                <span class="glass-pill profile-goldar-pill" id="profGoldarDisplay">Golongan Darah: O+</span>
+              </div>
+            </div>
+            <button class="btn-submit btn-edit-compact" onclick="openModal('modalEditProfile')">
+              <i class="fa-solid fa-pen-to-square"></i> Edit
             </button>
           </div>
 
-          <div class="profile-layout-grid">
-            <!-- Profile Avatar Column -->
-            <div style="display:flex; flex-direction:column; align-items:center; text-align:center;">
-              <img src="assets/avatar.png" alt="Sarah" style="width:140px; height:140px; border-radius:50%; object-fit:cover; border:4px solid white; box-shadow: var(--glass-shadow-hover);">
-              <h3 style="font-size:20px; font-weight:800; margin-top:14px;" id="profNameDisplay">Sarah Pertiwi</h3>
-              <p style="font-size:13px; color:var(--text-muted);" id="profEmailDisplay">sarah.pertiwi@example.com</p>
-              <div class="glass-pill" style="margin-top:12px; font-size:12px; font-weight:700; color:var(--primary);" id="profGoldarDisplay">
-                Golongan Darah: O+
-              </div>
+          <!-- 6-Metric High Density Compact Cards -->
+          <div class="profile-metrics-compact-grid">
+            <div class="glass-panel metric-card">
+              <div class="metric-label"><i class="fa-regular fa-calendar-check" style="color:var(--primary);"></i> HPHT</div>
+              <div class="metric-val" id="profHpht">16 Feb 2026</div>
             </div>
 
-            <!-- Profile Details Grid -->
-            <div class="profile-cards-grid">
-              <div class="glass-panel" style="padding:16px;">
-                <label style="font-size:11px; color:var(--text-muted); font-weight:700;">HARI FIRST HAID TERAKHIR (HPHT)</label>
-                <p style="font-size:16px; font-weight:800; margin-top:4px;" id="profHpht">16 Feb 2026</p>
-              </div>
+            <div class="glass-panel metric-card highlight-hpl">
+              <div class="metric-label"><i class="fa-solid fa-baby" style="color:var(--accent-pink);"></i> ESTIMASI HPL</div>
+              <div class="metric-val" id="profHpl">23 Nov 2026</div>
+            </div>
 
-              <div class="glass-panel" style="padding:16px;">
-                <label style="font-size:11px; color:var(--text-muted); font-weight:700;">ESTIMASI HARI LAHIR (HPL)</label>
-                <p style="font-size:16px; font-weight:800; margin-top:4px; color:var(--accent-pink);" id="profHpl">23 Nov 2026</p>
-              </div>
+            <div class="glass-panel metric-card">
+              <div class="metric-label"><i class="fa-solid fa-weight-scale" style="color:var(--accent-teal);"></i> BB & TB</div>
+              <div class="metric-val" id="profBb">55➔62kg | 162cm</div>
+            </div>
 
-              <div class="glass-panel" style="padding:16px;">
-                <label style="font-size:11px; color:var(--text-muted); font-weight:700;">BERAT BADAN AWAL & SEKARANG</label>
-                <p style="font-size:16px; font-weight:800; margin-top:4px;" id="profBb">55 kg ➔ 62 kg (+7 kg)</p>
-              </div>
+            <div class="glass-panel metric-card">
+              <div class="metric-label"><i class="fa-solid fa-phone" style="color:#ff1744;"></i> DARURAT</div>
+              <div class="metric-val" id="profEmergency">Budi Santoso</div>
+            </div>
 
-              <div class="glass-panel" style="padding:16px;">
-                <label style="font-size:11px; color:var(--text-muted); font-weight:700;">TINGGI BADAN</label>
-                <p style="font-size:16px; font-weight:800; margin-top:4px;" id="profTb">162 cm</p>
-              </div>
+            <div class="glass-panel metric-card">
+              <div class="metric-label"><i class="fa-solid fa-user-doctor" style="color:var(--primary);"></i> DOKTER</div>
+              <div class="metric-val" id="profDoctor">dr. Anisa Sp.OG</div>
+            </div>
 
-              <div class="glass-panel" style="padding:16px;">
-                <label style="font-size:11px; color:var(--text-muted); font-weight:700;">KONTAK DARURAT (SUAMI / KELUARGA)</label>
-                <p style="font-size:15px; font-weight:800; margin-top:4px;" id="profEmergency">Budi Santoso (0812-3456-7890)</p>
-              </div>
-
-              <div class="glass-panel" style="padding:16px;">
-                <label style="font-size:11px; color:var(--text-muted); font-weight:700;">DOKTER / BIDAN PENDAMPING</label>
-                <p style="font-size:15px; font-weight:800; margin-top:4px;" id="profDoctor">dr. Anisa Sp.OG (RS Permata)</p>
-              </div>
-
-              <div class="glass-panel full-width-card" style="padding:16px;">
-                <label style="font-size:11px; color:var(--text-muted); font-weight:700;">RIWAYAT ALERGI & CATATAN MEDIS</label>
-                <p style="font-size:14px; font-weight:600; margin-top:4px;" id="profAllergy">Alergi Obat Penisilin, Riwayat Asma Ringan.</p>
-              </div>
+            <div class="glass-panel metric-card">
+              <div class="metric-label"><i class="fa-solid fa-notes-medical" style="color:var(--accent-amber);"></i> CATATAN MEDIS</div>
+              <div class="metric-val" id="profAllergy">Alergi Penisilin, Asma</div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- TAB 3: REMINDER OBAT -->
+      <!-- TAB 3: REMINDER OBAT & VITAMIN -->
       <section class="tab-view" id="tab-obat">
         <div class="glass-panel" style="padding: 28px;">
           <div class="section-header">
-            <h3><i class="fa-solid fa-pills" style="color:var(--primary);"></i> Jadwal & Pengingat Obat / Vitamin</h3>
-            <button class="btn-submit" style="width:auto; padding:10px 20px; margin:0;" onclick="openModal('modalAddMed')">
-              <i class="fa-solid fa-plus"></i> Tambah Obat Baru
+            <h3><i class="fa-solid fa-pills" style="color:var(--primary);"></i> Reminder Obat & Suplemen Kehamilan</h3>
+            <button class="btn-submit" style="width:auto; padding:8px 18px; margin:0;" onclick="openModal('modalAddMed')">
+              <i class="fa-solid fa-plus"></i> Tambah Obat
             </button>
           </div>
 
-          <div style="margin-top: 16px;">
-            <div class="med-list" id="fullMedList">
-              <!-- Dynamically Rendered -->
-            </div>
+          <div class="med-grid-full" id="fullMedListGrid">
+            <!-- Dynamically populated -->
           </div>
         </div>
       </section>
 
-      <!-- TAB 4: ANC & USG -->
+      <!-- TAB 4: REKAM PEMERIKSAAN ANC & USG -->
       <section class="tab-view" id="tab-pemeriksaan">
         <div class="glass-panel" style="padding: 28px;">
           <div class="section-header">
-            <h3><i class="fa-solid fa-stethoscope" style="color:var(--primary);"></i> Rekam Pemeriksaan ANC & Hasil USG</h3>
-            <button class="btn-submit" style="width:auto; padding:10px 20px; margin:0;" onclick="openModal('modalAddAnc')">
-              <i class="fa-solid fa-plus"></i> Catat Hasil ANC / USG
+            <h3><i class="fa-solid fa-stethoscope" style="color:var(--primary);"></i> Riwayat Pemeriksaan ANC & USG</h3>
+            <button class="btn-submit" style="width:auto; padding:8px 18px; margin:0;" onclick="openModal('modalAddAnc')">
+              <i class="fa-solid fa-plus"></i> Catat Kontrol Baru
             </button>
           </div>
 
-          <div class="anc-card-list" id="ancListContainer" style="margin-top: 20px;">
-            <!-- Dynamically Rendered -->
+          <div class="anc-card-list" id="ancRecordList">
+            <!-- Dynamically populated -->
           </div>
         </div>
       </section>
 
-      <!-- TAB 5: KALENDER -->
+      <!-- TAB 5: KALENDER & JADWAL -->
       <section class="tab-view" id="tab-kalender">
         <div class="glass-panel" style="padding: 28px;">
           <div class="section-header">
             <h3><i class="fa-regular fa-calendar-check" style="color:var(--primary);"></i> Kalender Kehamilan & Agenda</h3>
-            <div style="display:flex; gap:12px; font-size:12px; font-weight:700;">
-              <span><span class="dot-event dot-med" style="display:inline-block;"></span> Obat/Vitamin</span>
-              <span><span class="dot-event dot-doctor" style="display:inline-block;"></span> Kontrol Dokter</span>
-              <span><span class="dot-event dot-anc" style="display:inline-block;"></span> ANC/USG</span>
+            <button class="btn-submit" style="width:auto; padding:8px 18px; margin:0;" onclick="openModal('modalAddAnc')">
+              <i class="fa-solid fa-plus"></i> Tambah Agenda
+            </button>
+          </div>
+
+          <!-- Calendar Month Header -->
+          <div class="calendar-header-nav">
+            <h4 id="calendarMonthLabel">Agustus 2026 (Minggu 24 Kehamilan)</h4>
+            <div style="display:flex; gap:8px;">
+              <button class="icon-btn" onclick="prevMonth()"><i class="fa-solid fa-chevron-left"></i></button>
+              <button class="icon-btn" onclick="nextMonth()"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
           </div>
 
-          <div style="margin-top:20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-              <h4 style="font-size:18px; font-weight:800;" id="calMonthYear">Agustus 2026</h4>
-              <div style="display:flex; gap:8px;">
-                <button class="icon-btn" onclick="prevMonth()"><i class="fa-solid fa-chevron-left"></i></button>
-                <button class="icon-btn" onclick="nextMonth()"><i class="fa-solid fa-chevron-right"></i></button>
-              </div>
-            </div>
-
-            <div class="calendar-grid">
-              <div class="cal-day-header">MIN</div>
-              <div class="cal-day-header">SEN</div>
-              <div class="cal-day-header">SEL</div>
-              <div class="cal-day-header">RAB</div>
-              <div class="cal-day-header">KAM</div>
-              <div class="cal-day-header">JUM</div>
-              <div class="cal-day-header">SAB</div>
-            </div>
-
-            <div class="calendar-grid" id="calendarDaysGrid">
-              <!-- Dynamically Populated Days -->
-            </div>
+          <div class="calendar-grid" id="calendarDaysGrid">
+            <!-- Dynamically Populated -->
           </div>
         </div>
       </section>
@@ -389,59 +365,61 @@
       <section class="tab-view" id="tab-edukasi">
         <div class="glass-panel" style="padding: 28px;">
           <div class="section-header">
-            <h3><i class="fa-solid fa-book-open-reader" style="color:var(--primary);"></i> Panduan & Edukasi Kehamilan</h3>
-            <div style="display:flex; gap:10px;">
-              <select class="form-control" id="eduWeekSelect" style="width:160px; font-weight:700;" onchange="loadEducationForWeek(this.value)">
-                <!-- Generated 1 - 40 -->
+            <h3><i class="fa-solid fa-book-open-reader" style="color:var(--primary);"></i> Panduan Edukasi Kehamilan Mingguan</h3>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <label style="font-size:13px; font-weight:700;">Pilih Minggu:</label>
+              <select id="eduWeekSelect" class="form-control" style="width:auto; padding:6px 12px;" onchange="loadEducationForWeek(this.value)">
+                <!-- Generated 1 to 40 -->
               </select>
             </div>
           </div>
 
-          <div id="eduContentArea" style="margin-top:20px;">
+          <div id="eduContentArea">
             <!-- Dynamically Loaded -->
           </div>
         </div>
       </section>
 
-      <!-- TAB 7: CATATAN HARIAN / MOOD TRACKER -->
+      <!-- TAB 7: CATATAN HARIAN & MOOD TRACKER -->
       <section class="tab-view" id="tab-catatan">
         <div class="glass-panel" style="padding: 28px;">
           <div class="section-header">
-            <h3><i class="fa-solid fa-book-bookmark" style="color:var(--primary);"></i> Catatan Harian & Mood Bunda</h3>
+            <h3><i class="fa-solid fa-book-bookmark" style="color:var(--primary);"></i> Catatan Harian & Mood Tracker Bunda</h3>
           </div>
 
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-top:20px;">
-            <!-- Mood Entry Form -->
+          <div class="form-row" style="margin-top:20px;">
+            <!-- New Journal Form -->
             <div class="glass-panel" style="padding:20px;">
-              <h4 style="font-size:16px; font-weight:800; margin-bottom:14px;">Bagaimana Perasaan Bunda Hari Ini?</h4>
-              
-              <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                <button class="mood-btn icon-btn" style="width:50px; height:50px; font-size:24px;" onclick="selectMood('😄', 'Sangat Bahagia')">😄</button>
-                <button class="mood-btn icon-btn" style="width:50px; height:50px; font-size:24px;" onclick="selectMood('😊', 'Tenang')">😊</button>
-                <button class="mood-btn icon-btn" style="width:50px; height:50px; font-size:24px;" onclick="selectMood('😐', 'Lelah')">😐</button>
-                <button class="mood-btn icon-btn" style="width:50px; height:50px; font-size:24px;" onclick="selectMood('😔', 'Cemas')">😔</button>
-                <button class="mood-btn icon-btn" style="width:50px; height:50px; font-size:24px;" onclick="selectMood('🤢', 'Mual')">🤢</button>
-              </div>
-
-              <form id="formDiary" onsubmit="saveDiaryEntry(event)">
-                <input type="hidden" id="diaryMoodVal" value="😊">
-                <input type="hidden" id="diaryMoodLabel" value="Tenang">
-
+              <h4 style="font-size:16px; font-weight:800; margin-bottom:14px;">Tambah Catatan Hari Ini</h4>
+              <form onsubmit="saveDiaryLog(event)">
                 <div class="form-group">
-                  <label>Keluhan Fisik (opsional):</label>
-                  <input type="text" id="diaryComplaint" class="form-control" placeholder="cth: Pegal pinggang, mual ringan...">
+                  <label>Mood Bunda Hari Ini:</label>
+                  <div style="display:flex; gap:10px; font-size:24px; margin-top:4px;">
+                    <span style="cursor:pointer;" onclick="selectMood('😄', 'Sangat Bahagia')">😄</span>
+                    <span style="cursor:pointer;" onclick="selectMood('😊', 'Tenang')">😊</span>
+                    <span style="cursor:pointer;" onclick="selectMood('🤢', 'Mual / Lemas')">🤢</span>
+                    <span style="cursor:pointer;" onclick="selectMood('😣', 'Pegal / Sakit')">😣</span>
+                    <span style="cursor:pointer;" onclick="selectMood('🥺', 'Cemas')">🥺</span>
+                  </div>
+                  <input type="hidden" id="diaryMoodVal" value="😄">
+                  <input type="hidden" id="diaryMoodLabel" value="Sangat Bahagia">
                 </div>
 
                 <div class="form-group">
-                  <label>Catatan / Jurnal Bebas:</label>
-                  <textarea id="diaryNote" class="form-control" rows="4" placeholder="Tulis cerita atau momen bahagia kehamilan hari ini..."></textarea>
+                  <label>Keluhan Fisik (Jika ada):</label>
+                  <input type="text" id="diaryComplaint" class="form-control" placeholder="cth: Pegal di pinggang bawah, mual pagi">
                 </div>
 
-                <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Simpan Catatan Harian</button>
+                <div class="form-group">
+                  <label>Catatan / Perasaan Bunda:</label>
+                  <textarea id="diaryNote" class="form-control" rows="3" placeholder="Tuliskan pengalaman manis atau perkembangan si kecil hari ini..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit"><i class="fa-solid fa-heart"></i> Simpan Catatan</button>
               </form>
             </div>
 
-            <!-- Diary History -->
+            <!-- History List -->
             <div class="glass-panel" style="padding:20px;">
               <h4 style="font-size:16px; font-weight:800; margin-bottom:14px;">Riwayat Catatan</h4>
               <div id="diaryHistoryList" style="display:flex; flex-direction:column; gap:12px; max-height:420px; overflow-y:auto;">
@@ -452,39 +430,39 @@
         </div>
       </section>
 
-      <!-- TAB 8: ASISTEN AI BUNDACARE -->
+      <!-- TAB 8: ASISTEN AI BUNDACARE (Single Viewport 1-Screen) -->
       <section class="tab-view" id="tab-ai-assistant">
-        <div class="glass-panel" style="padding: 28px;">
-          <div class="section-header ai-header" style="flex-wrap:wrap; gap:10px;">
-            <h3><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary);"></i> Asisten AI BundaCare 💕</h3>
-            <span class="glass-pill" style="font-size:12px; font-weight:700; color:var(--accent-teal);" id="aiStatusBadge">Powered by OpenRouter AI</span>
-          </div>
-
-          <!-- API Key Input Bar -->
-          <div class="glass-panel ai-key-bar">
-            <div style="display:flex; align-items:center; gap:10px; flex:1; width:100%;">
-              <i class="fa-solid fa-key" style="color:var(--primary); font-size:16px;"></i>
-              <input type="password" id="customApiKeyInput" class="form-control" placeholder="Masukkan OpenRouter API Key Anda (sk-or-v1-...)" style="margin:0; font-size:13px;">
+        <div class="chat-single-viewport-container glass-panel">
+          <!-- Compact AI Top Header -->
+          <div class="ai-compact-topbar">
+            <div class="ai-title-wrap">
+              <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary);"></i>
+              <h4>Asisten AI 💕</h4>
+              <span class="glass-pill ai-status-pill" id="aiStatusBadge">Powered by OpenRouter</span>
             </div>
-            <button class="btn-submit" style="width:auto; padding:8px 18px; margin:0; white-space:nowrap;" onclick="saveCustomApiKey()">
-              <i class="fa-solid fa-floppy-disk"></i> Simpan Key
+            <button class="btn-icon-key" onclick="toggleApiKeyBar()" title="Pengaturan Key API">
+              <i class="fa-solid fa-key"></i> Key
             </button>
           </div>
 
-          <div class="chat-container glass-panel" style="margin-top:16px;">
-            <div class="chat-messages" id="chatMessages">
-              <div class="chat-bubble bot">
-                Halo Bu' Aulia Cantik! 👋 Saya Asisten OpenRouter AI BundaCare. Silakan tanyakan apa saja seputar perkembangan janin, ibadah/sholat saat hamil, gizi ibu hamil, keluhan fisik, atau tips kesehatan kehamilan. 
-                <br><br>
-                <small style="color:var(--text-muted); display:block; margin-top:4px;">*Catatan: Informasi AI ini bersifat edukatif dan tidak menggantikan nasihat medis dokter/bidan.*</small>
-              </div>
-            </div>
-
-            <form class="chat-input-row" onsubmit="sendChatMessage(event)">
-              <input type="text" id="chatInput" class="form-control" placeholder="Ketik pertanyaan Bunda di sini... (cth: Apakah aman minum es saat hamil?)" required>
-              <button type="submit" class="btn-submit" style="width:auto; padding:0 24px; margin:0;"><i class="fa-solid fa-paper-plane"></i></button>
-            </form>
+          <!-- Collapsible API Key Drawer -->
+          <div class="ai-key-drawer" id="aiKeyDrawer" style="display:none;">
+            <input type="password" id="customApiKeyInput" class="form-control" placeholder="OpenRouter API Key (sk-or-v1-...)">
+            <button class="btn-submit" style="width:auto; padding:8px 14px; margin:0;" onclick="saveCustomApiKey()">Simpan</button>
           </div>
+
+          <!-- Chat Scrollable Messages Area -->
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-bubble bot">
+              Halo Bu' Aulia Cantik! 👋 Saya Asisten OpenRouter AI BundaCare. Ada yang bisa saya bantu tentang kehamilan, ibadah/sholat, gizi, atau keluhan fisik hari ini?
+            </div>
+          </div>
+
+          <!-- Fixed Bottom Chat Input Row -->
+          <form class="chat-input-row" onsubmit="sendChatMessage(event)">
+            <input type="text" id="chatInput" class="form-control" placeholder="Ketik pertanyaan Bunda di sini..." required>
+            <button type="submit" class="btn-submit btn-send-chat"><i class="fa-solid fa-paper-plane"></i></button>
+          </form>
         </div>
       </section>
 

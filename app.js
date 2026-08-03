@@ -907,6 +907,13 @@ function toggleTheme() {
   showToast(`Mode tampilan diubah ke ${next.toUpperCase()} mode.`);
 }
 
+function toggleApiKeyBar() {
+  const drawer = document.getElementById('aiKeyDrawer');
+  if (drawer) {
+    drawer.style.display = drawer.style.display === 'none' ? 'flex' : 'none';
+  }
+}
+
 function resetAppData() {
   if (confirm("Apakah Bunda yakin ingin mengembalikan data ke kondisi awal demo?")) {
     localStorage.removeItem('bundacare_state');
