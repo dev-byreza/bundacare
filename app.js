@@ -366,11 +366,15 @@ function zoomUsgImage(imgUrl) {
   openModal('modalUsgZoom');
 }
 
-// --- ANC Records & USG Renderer ---
 function renderAncList() {
   const container = document.getElementById('ancListContainer') || document.getElementById('ancRecordList');
   if (!container) return;
   container.innerHTML = '';
+
+  if (appState.ancRecords.length === 0) {
+    container.innerHTML = '<p style="font-size:13px; color:var(--text-muted); padding:16px;">Belum ada catatan pemeriksaan USG. Klik tombol "Catat USG Baru" untuk menambahkan.</p>';
+    return;
+  }
 
   appState.ancRecords.forEach(anc => {
     const card = document.createElement('div');
@@ -389,7 +393,12 @@ function renderAncList() {
       <div style="flex:1;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
           <h4 style="font-size:16px; font-weight:800;">Pemeriksaan Minggu Ke-${anc.week}</h4>
-          <span class="glass-pill" style="font-size:12px; font-weight:700;"><i class="fa-regular fa-calendar"></i> ${anc.date}</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="glass-pill" style="font-size:12px; font-weight:700;"><i class="fa-regular fa-calendar"></i> ${anc.date}</span>
+            <button class="icon-btn-delete" onclick="deleteAncRecord(${anc.id})" title="Hapus Catatan USG">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
         </div>
         <div style="display:flex; gap:12px; flex-wrap:wrap; margin:10px 0; font-size:13px; font-weight:700; color:var(--text-main);">
           <span><i class="fa-solid fa-heart-pulse" style="color:var(--accent-pink);"></i> TD: ${anc.bp}</span>
@@ -402,6 +411,17 @@ function renderAncList() {
     `;
     container.appendChild(card);
   });
+}
+
+function deleteAncRecord(id) {
+  const rec = appState.ancRecords.find(r => r.id === id);
+  const label = rec ? `Pemeriksaan Minggu Ke-${rec.week}` : 'Catatan USG';
+  if (confirm(`Hapus "${label}" dari riwayat pemeriksaan?`)) {
+    appState.ancRecords = appState.ancRecords.filter(r => r.id !== id);
+    saveState();
+    renderAncList();
+    showToast(`Catatan ${label} berhasil dihapus. 🗑️`);
+  }
 }
 
 function saveNewAnc(e) {
@@ -713,7 +733,13 @@ function selectMood(emoji, label) {
 
 function renderDiaryHistory() {
   const container = document.getElementById('diaryHistoryList');
+  if (!container) return;
   container.innerHTML = '';
+
+  if (appState.diaryLogs.length === 0) {
+    container.innerHTML = '<p style="font-size:13px; color:var(--text-muted); padding:16px;">Belum ada catatan harian. Tulis perasaan Bunda di atas!</p>';
+    return;
+  }
 
   appState.diaryLogs.forEach(log => {
     const card = document.createElement('div');
@@ -722,13 +748,25 @@ function renderDiaryHistory() {
     card.innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
         <span style="font-size:14px; font-weight:800;">${log.moodEmoji} ${log.moodLabel}</span>
-        <span style="font-size:11px; color:var(--text-muted);">${log.date}</span>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:11px; color:var(--text-muted);">${log.date}</span>
+          <button class="icon-btn-delete" onclick="deleteDiaryEntry(${log.id})" title="Hapus Catatan">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
       </div>
       ${log.complaint ? `<p style="font-size:12px; color:var(--accent-pink); font-weight:600;">Keluhan: ${log.complaint}</p>` : ''}
       <p style="font-size:13px; color:var(--text-muted); margin-top:4px;">${log.note}</p>
     `;
     container.appendChild(card);
   });
+}
+
+function deleteDiaryEntry(id) {
+  appState.diaryLogs = appState.diaryLogs.filter(l => l.id !== id);
+  saveState();
+  renderDiaryHistory();
+  showToast('Catatan harian berhasil dihapus. 🗑️');
 }
 
 function saveDiaryEntry(e) {
