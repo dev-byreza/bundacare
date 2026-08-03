@@ -730,7 +730,7 @@ async function sendChatMessage(e) {
   const botBubble = document.createElement('div');
   botBubble.className = 'chat-bubble bot';
   botBubble.id = 'aiTypingIndicator';
-  botBubble.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color:var(--primary);"></i> <span style="color:var(--text-muted);">Asisten OpenRouter AI sedang berpikir...</span>`;
+  botBubble.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color:var(--primary);"></i> <span style="color:var(--text-muted);">Asisten Aulia sedang berpikir... ✨</span>`;
   messagesBox.appendChild(botBubble);
   messagesBox.scrollTop = messagesBox.scrollHeight;
 
