@@ -182,7 +182,7 @@ function updateDashboard() {
   document.getElementById('profAllergy').innerText = p.allergy;
 }
 
-// Render Dashboard Short Medicine List (Synchronized with Tab Obat)
+// Render Dashboard Short Medicine List (Front View - Checkbox Only)
 function renderDashboardMedList() {
   const container = document.getElementById('dashMedList');
   if (!container) return;
@@ -204,20 +204,15 @@ function renderDashboardMedList() {
           <p><i class="fa-regular fa-clock"></i> Jam: ${med.time} • ${med.freq}</p>
         </div>
       </div>
-      <div style="display:flex; align-items:center; gap:8px;">
-        <button class="checkbox-custom" onclick="toggleMedTaken(${med.id})" title="${med.taken ? 'Tandai Belum Diminum' : 'Tandai Sudah Diminum'}">
-          ${med.taken ? '<i class="fa-solid fa-check"></i>' : ''}
-        </button>
-        <button class="icon-btn-delete" onclick="deleteMed(${med.id})" title="Hapus Obat">
-          <i class="fa-solid fa-trash-can"></i>
-        </button>
-      </div>
+      <button class="checkbox-custom" onclick="toggleMedTaken(${med.id})" title="${med.taken ? 'Tandai Belum Diminum' : 'Tandai Sudah Diminum'}">
+        ${med.taken ? '<i class="fa-solid fa-check"></i>' : ''}
+      </button>
     `;
     container.appendChild(card);
   });
 }
 
-// Render Full Medicines Tab List
+// Render Full Medicines Tab List (With Delete Option)
 function renderFullMedList() {
   const container = document.getElementById('fullMedList') || document.getElementById('fullMedListGrid');
   if (!container) return;
@@ -249,7 +244,7 @@ function renderFullMedList() {
         <button class="checkbox-custom" onclick="toggleMedTaken(${med.id})" title="${med.taken ? 'Tandai Belum Diminum' : 'Tandai Sudah Diminum'}">
           ${med.taken ? '<i class="fa-solid fa-check"></i>' : ''}
         </button>
-        <button class="icon-btn-delete" onclick="deleteMed(${med.id})" title="Hapus Obat">
+        <button class="icon-btn-delete" onclick="confirmDeleteMed(${med.id})" title="Hapus Obat">
           <i class="fa-solid fa-trash-can"></i>
         </button>
       </div>
@@ -269,16 +264,38 @@ function toggleMedTaken(id) {
   }
 }
 
-function deleteMed(id) {
+let pendingDeleteMedId = null;
+
+function confirmDeleteMed(id) {
+  const med = appState.medicines.find(m => m.id === id);
+  if (!med) return;
+  
+  pendingDeleteMedId = id;
+  const textEl = document.getElementById('deleteConfirmText');
+  if (textEl) {
+    textEl.innerHTML = `Apakah Bunda yakin ingin menghapus jadwal obat <strong>"${med.name}"</strong>?`;
+  }
+  
+  const actionBtn = document.getElementById('btnConfirmDeleteAction');
+  if (actionBtn) {
+    actionBtn.onclick = function() {
+      executeDeleteMed(pendingDeleteMedId);
+    };
+  }
+  
+  openModal('modalConfirmDelete');
+}
+
+function executeDeleteMed(id) {
   const med = appState.medicines.find(m => m.id === id);
   const medName = med ? med.name : 'Obat';
-  if (confirm(`Apakah Bunda yakin ingin menghapus jadwal obat "${medName}"?`)) {
-    appState.medicines = appState.medicines.filter(m => m.id !== id);
-    saveState();
-    updateDashboard();
-    renderFullMedList();
-    showToast(`Jadwal obat ${medName} berhasil dihapus. 🗑️`);
-  }
+  appState.medicines = appState.medicines.filter(m => m.id !== id);
+  saveState();
+  updateDashboard();
+  renderFullMedList();
+  closeModal('modalConfirmDelete');
+  showToast(`Jadwal obat ${medName} telah dihapus. 🗑️`);
+  pendingDeleteMedId = null;
 }
 
 function saveNewMedicine(e) {
