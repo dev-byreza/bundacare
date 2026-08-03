@@ -1317,14 +1317,15 @@ body {
   text-overflow: ellipsis;
 }
 
-/* Single Viewport 1-Screen AI Chat Container */
+/* Compact Viewport AI Chat Container */
 .chat-single-viewport-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 165px);
-  min-height: 480px;
+  height: 380px;
+  max-height: 52vh;
   padding: 0;
   overflow: hidden;
+  border-radius: var(--radius-lg);
 }
 
 .ai-compact-topbar {

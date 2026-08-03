@@ -289,18 +289,45 @@ function saveNewMedicine(e) {
   e.target.reset();
 }
 
+let currentUploadedUsgBase64 = null;
+
+function previewUsgPhoto(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    currentUploadedUsgBase64 = evt.target.result;
+    const previewDiv = document.getElementById('ancUsgPhotoPreview');
+    const imgTag = document.getElementById('ancUsgImgTag');
+    if (imgTag) imgTag.src = currentUploadedUsgBase64;
+    if (previewDiv) previewDiv.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function zoomUsgImage(imgUrl) {
+  const zoomImg = document.querySelector('#modalUsgZoom img');
+  if (zoomImg) {
+    zoomImg.src = imgUrl || 'assets/ultrasound.png';
+  }
+  openModal('modalUsgZoom');
+}
+
 // --- ANC Records & USG Renderer ---
 function renderAncList() {
-  const container = document.getElementById('ancListContainer');
+  const container = document.getElementById('ancListContainer') || document.getElementById('ancRecordList');
+  if (!container) return;
   container.innerHTML = '';
 
   appState.ancRecords.forEach(anc => {
     const card = document.createElement('div');
     card.className = 'anc-record-card glass-panel';
+    const usgPhoto = anc.usgImg || 'assets/ultrasound.png';
     card.innerHTML = `
       ${anc.hasUsg ? `
-        <div class="usg-thumb-wrapper" onclick="openModal('modalUsgZoom')">
-          <img src="${anc.usgImg}" alt="Foto USG">
+        <div class="usg-thumb-wrapper" onclick="zoomUsgImage('${usgPhoto}')">
+          <img src="${usgPhoto}" alt="Foto USG">
         </div>
       ` : `
         <div class="med-icon" style="width:110px; height:110px; border-radius:var(--radius-md); font-size:32px;">
@@ -308,11 +335,11 @@ function renderAncList() {
         </div>
       `}
       <div style="flex:1;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
           <h4 style="font-size:16px; font-weight:800;">Pemeriksaan Minggu Ke-${anc.week}</h4>
           <span class="glass-pill" style="font-size:12px; font-weight:700;"><i class="fa-regular fa-calendar"></i> ${anc.date}</span>
         </div>
-        <div style="display:flex; gap:16px; margin:10px 0; font-size:13px; font-weight:700; color:var(--text-main);">
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin:10px 0; font-size:13px; font-weight:700; color:var(--text-main);">
           <span><i class="fa-solid fa-heart-pulse" style="color:var(--accent-pink);"></i> TD: ${anc.bp}</span>
           <span><i class="fa-solid fa-weight-scale" style="color:var(--primary);"></i> BB: ${anc.weight} kg</span>
           <span><i class="fa-solid fa-wave-square" style="color:var(--accent-teal);"></i> DJJ: ${anc.djj}</span>
@@ -345,14 +372,17 @@ function saveNewAnc(e) {
     tfu,
     note,
     hasUsg: true,
-    usgImg: "assets/ultrasound.png"
+    usgImg: currentUploadedUsgBase64 || "assets/ultrasound.png"
   };
 
   appState.ancRecords.unshift(newRecord);
   saveState();
   renderAncList();
   closeModal('modalAddAnc');
-  showToast("Catatan hasil ANC berhasil disimpan! 🩺");
+  showToast("Catatan hasil ANC & Foto USG berhasil disimpan! 🩺📷");
+  currentUploadedUsgBase64 = null;
+  const previewDiv = document.getElementById('ancUsgPhotoPreview');
+  if (previewDiv) previewDiv.style.display = 'none';
   e.target.reset();
 }
 

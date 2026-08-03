@@ -601,10 +601,17 @@
           </div>
         </div>
         <div class="form-group">
+          <label><i class="fa-solid fa-camera" style="color:var(--primary);"></i> Upload Foto Hasil USG (Opsional):</label>
+          <input type="file" id="ancUsgPhotoInput" accept="image/*" class="form-control" onchange="previewUsgPhoto(event)">
+          <div id="ancUsgPhotoPreview" style="margin-top:8px; display:none;">
+            <img id="ancUsgImgTag" src="" alt="Preview USG" style="max-height:100px; border-radius:var(--radius-sm); border:2px solid var(--primary);">
+          </div>
+        </div>
+        <div class="form-group">
           <label>Catatan & Nasihat Dokter:</label>
           <textarea id="ancNote" class="form-control" rows="2" placeholder="cth: Perkembangan janin sangat baik, pertahankan asupan gizi..."></textarea>
         </div>
-        <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Simpan Catatan ANC</button>
+        <button type="submit" class="btn-submit"><i class="fa-solid fa-floppy-disk"></i> Simpan Catatan ANC & USG</button>
       </form>
     </div>
   </div>
