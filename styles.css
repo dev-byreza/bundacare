@@ -1210,6 +1210,24 @@ body {
   color: var(--primary);
 }
 
+/* Profile Page Grid Layout */
+.profile-layout-grid {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 32px;
+  margin-top: 20px;
+}
+
+.profile-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.full-width-card {
+  grid-column: span 2;
+}
+
 /* Full Mobile Optimization Rules (100% Mobile Support) */
 @media (max-width: 1024px) {
   .dashboard-grid {
@@ -1225,6 +1243,17 @@ body {
     max-width: 100%;
     padding: 12px;
     padding-bottom: 100px;
+  }
+  .profile-layout-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .profile-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .full-width-card {
+    grid-column: span 1;
   }
   .top-header {
     padding: 12px 14px;
