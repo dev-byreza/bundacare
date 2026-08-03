@@ -60,7 +60,7 @@
               <button><i class="fa-solid fa-pills"></i> Reminder Obat</button>
             </li>
             <li class="nav-item" data-tab="pemeriksaan">
-              <button><i class="fa-solid fa-stethoscope"></i> ANC & USG</button>
+              <button><i class="fa-solid fa-camera"></i> Rekam USG</button>
             </li>
             <li class="nav-item" data-tab="kalender">
               <button><i class="fa-regular fa-calendar-check"></i> Kalender</button>
@@ -226,7 +226,7 @@
                   <i class="fa-solid fa-plus-circle"></i> Tambah Obat
                 </button>
                 <button class="quick-action-btn" onclick="openModal('modalAddAnc')">
-                  <i class="fa-solid fa-file-medical"></i> Catat ANC
+                  <i class="fa-solid fa-camera"></i> Catat USG
                 </button>
                 <button class="quick-action-btn" onclick="switchTab('catatan')">
                   <i class="fa-solid fa-face-smile"></i> Mood Harian
@@ -324,9 +324,9 @@
       <section class="tab-view" id="tab-pemeriksaan">
         <div class="glass-panel" style="padding: 28px;">
           <div class="section-header">
-            <h3><i class="fa-solid fa-stethoscope" style="color:var(--primary);"></i> Riwayat Pemeriksaan ANC & USG</h3>
+            <h3><i class="fa-solid fa-camera" style="color:var(--primary);"></i> Riwayat Pemeriksaan & Foto USG</h3>
             <button class="btn-submit" style="width:auto; padding:8px 18px; margin:0;" onclick="openModal('modalAddAnc')">
-              <i class="fa-solid fa-plus"></i> Catat Kontrol Baru
+              <i class="fa-solid fa-plus"></i> Catat USG Baru
             </button>
           </div>
 
@@ -566,7 +566,7 @@
   <div class="modal-overlay" id="modalAddAnc">
     <div class="modal-card glass-panel">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-stethoscope" style="color:var(--primary);"></i> Catat Pemeriksaan ANC / USG</h3>
+        <h3><i class="fa-solid fa-camera" style="color:var(--primary);"></i> Catat Hasil & Foto USG</h3>
         <button class="modal-close-btn" onclick="closeModal('modalAddAnc')"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <form onsubmit="saveNewAnc(event)">

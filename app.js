@@ -915,7 +915,7 @@ function switchTab(tabId) {
     'dashboard': 'Dashboard Ringkasan',
     'profil': 'Profil Kehamilan Bunda',
     'obat': 'Pengingat Obat & Vitamin',
-    'pemeriksaan': 'Rekam Pemeriksaan ANC & USG',
+    'pemeriksaan': 'Rekam Pemeriksaan & Foto USG',
     'kalender': 'Kalender & Agenda Kehamilan',
     'edukasi': 'Edukasi Mingguan Kehamilan',
     'catatan': 'Catatan Harian & Mood Tracker',
